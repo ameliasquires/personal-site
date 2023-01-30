@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>nya~</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        
+        <style>
+            :root {
+                --primary: #ee2757;
+                --complement: #eb586f;
+                --contrast: #8144e9;
+                --white: #f0fcfb;
+                --black: #212121;
+                --font-size: 17px;
+            }
+            *{
+                margin:0;
+            }
+            body{
+                background-color: var(--black);
+                font-family: 'Press Start 2P';
+                color: var(--white);
+                font-size:var(--font-size);
+                text-shadow: 0 0 10px var(--white);
+
+            }
+            input{
+                background-color: var(--black);
+                font-family: 'Press Start 2P';
+                color: var(--white);
+                font-size:var(--font-size);
+                text-shadow: 0 0 10px var(--white);
+                border: none;
+            }
+            input {border:0;outline:0;}
+            input:focus {outline:none!important;}
+            input:hover {
+                cursor:text;
+            }
+        </style>
+        <script>
+            let working_dir = "/"
+            let fs = [
+                {name:"readme",perms:{r:true},dir:false,content:"test test test"}
+                ,{name:"help",perms:{r:true},dir:true,content:[]}
+
+            ]
+            function set_wd(wd){
+                let lwd = fs
+                let wd = fs
+                let path= wd.split("/").filter(function(e) { return e !== '' })
+                for(let dir of path){
+                    lwd = wd;
+                    for(let i of wd){
+                        console.log(i)
+                        if(i.name==dir&&i.dir){
+
+                                wd=i.content
+                                break;
+
+                        }
+                    }
+                }
+                return wd;
+            }
+            function ex(){
+                
+                console.log(wd)
+                document.getElementById("history").innerHTML+= "λ " + document.getElementById("line").value + "</br>"
+                let com = document.getElementById("line").value;
+                let stripped = com.split(" ")
+                switch(stripped[0]){
+                    case 'neofetch':
+                        document.getElementById("history").innerHTML+="uwu</br>"
+                    break;
+                    case 'ls':
+                        for(let i of wd){
+                            if(i.dir)
+                            document.getElementById("history").innerHTML+="<font style='opacity:.3'>[</font>"+i.name+"<font style='opacity:.3'>]</font></br>"
+                            else
+                            document.getElementById("history").innerHTML+=i.name+"</br>"
+                        }
+                    break;
+                    default:
+                        document.getElementById("history").innerHTML+="jssh: "+stripped[0]+": command not found or not implemented</br>"
+                    break;
+                }
+                
+                document.getElementById("line").value = ""
+            }
+        </script>
+    </head>
+    <body>
+        
+            <div id="history">
+
+            </div>
+            <form autocomplete="off" onsubmit="ex();return false;" >
+                λ <input id="line">
+                <input type="submit" style="display: none" />
+            </form >
+        
+    </body>
+</html>
