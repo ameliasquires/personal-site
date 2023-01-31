@@ -114,7 +114,31 @@
             let stripped = com.split(" ")
             switch (stripped[0]) {
                 case 'neofetch':
-                    document.getElementById("history").innerHTML += "hello, i am grant, they/them</br>i am mostly typescript and c++ dev, but</br>i can work in most languages</br>--</br>i enjoy manga, and coding in free time</br>contact me at grantsquires@disroot.org</br>"
+                document.getElementById("history").innerHTML += "<pre>\
+  ,-.       _,---._ __   / \\ \n \
+ /  )    .-'       `./ /   \\ \n \
+(  (   ,'            `/    /| \n \
+ \\  `-\"             \'\\    / | \n \
+  `.              ,   \\ /   | \n \
+   /`.          ,'-`----Y   | \n \
+  (            ;        |   ' \n \
+  |  ,-.    ,-'         |  / \n \
+  |  | (   |            | / \n \
+  )  |  \\  `.___________|/ \n \
+  `--'   `--' </pre>" //position this plz:)
+                    document.getElementById("history").innerHTML += "hello, i am grant, they/them</br>i am mostly a typescript and c++ dev, but</br>i can work in most languages</br>--</br>i enjoy manga, and coding in free time</br>contact me at grantsquires@disroot.org</br></br>"
+                    colors = ['#cdb4db','#ffc8dd','#ffafcc','#bde0fe','#a2d2ff']
+                    for(let co of colors){
+                        document.getElementById("history").innerHTML += "<pre style='margin-bottom:-2px;display:inline-block;height:25px;width:30px;background-color:"+co+";'></pre>"
+                    }
+                    document.getElementById("history").innerHTML += "</br>"
+                    colors = ['#a81d61','#ff218e','#fcd800','#0194fc','#007cd5']
+                    for(let co of colors){
+                        document.getElementById("history").innerHTML += "<pre style='display:inline-block;height:25px;width:30px;background-color:"+co+";'></pre>"
+                    }
+                    
+                    document.getElementById("history").innerHTML +="</br></br>"
+
                     break;
                 case 'clear':
                     document.getElementById("history").innerHTML = '';
