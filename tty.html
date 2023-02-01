@@ -56,9 +56,10 @@
         let working_dir = "/"
         let fs = [
             { name: ".bashrc", perms: { r: true }, dir: false, content: "neofetch" },
-            { name: "readme", perms: { r: true }, dir: false, content: "test test acr" }
-            , { name: "help", perms: { r: true }, dir: true, content: [{ name: "aaa", perms: { r: true }, dir: false, content: "test test test" }] }
-            , { name: ".secret", perms: { r: true }, dir: true, content: [] }
+            { name: "readme", perms: { r: true }, dir: false, content: "i dont really know what to put here:(" }
+            , { name: "more-aboutme", perms: { r: true }, dir: false, content: "experienced development in ts/js and c/c++\nless experience but still some in\nclojure, java, python, and probably some more.\n\ni like manga and anime, favorites are something like\n(not ordered) mushoku tensei, pet girl of sakurasou\noverlord, rising of shield here\nand that time i got reincarnated as a slime.\n\ni also play some games n stuff,\nlove terraria, and some other similar games\ni also lovelove visual novels\nusually romance/horror ones" }
+            , { name: "test", perms: { r: true }, dir: true, content: [{ name: "aaa", perms: { r: true }, dir: false, content: "test test test" }] }
+            , { name: ".secret", perms: { r: true }, dir: true, content: [{ name: "readme", perms: { r: true }, dir: false, content: "still working on things:) nothing here is final\n or even close" }] }
 
         ]
         function set_wd(dir) {
@@ -104,8 +105,18 @@
             return "/" + path.join("/")
         }
         function main() {
-            document.getElementById("line").value = "neofetch"
-            ex()
+            for (let d of fs) {
+                if (d.name == '.bashrc') {
+                    for (let line of d.content.split("\n")) {
+                        document.getElementById("line").value = line
+                        ex()
+                    }
+                    break
+                }
+            }
+            setInterval(() => {
+                document.getElementById("line").focus()
+            }, 10)
         }
         function ex() {
             let temp_working_dir = working_dir
@@ -113,8 +124,12 @@
             let com = document.getElementById("line").value;
             let stripped = com.split(" ")
             switch (stripped[0]) {
+                case 'jssh':
+                    main()
+                    break;
                 case 'neofetch':
-                document.getElementById("history").innerHTML += "<pre>\
+                    let add = ''
+                    add += "<table style='padding:5px;'><tr style='padding:5px;'><td style='padding:5px;'><pre id='txt'>\
   ,-.       _,---._ __   / \\ \n \
  /  )    .-'       `./ /   \\ \n \
 (  (   ,'            `/    /| \n \
@@ -126,29 +141,28 @@
   |  | (   |            | / \n \
   )  |  \\  `.___________|/ \n \
   `--'   `--' </pre>" //position this plz:)
-                    document.getElementById("history").innerHTML += "hello, i am grant, they/them</br>i am mostly a typescript and c++ dev, but</br>i can work in most languages</br>--</br>i enjoy manga, and coding in free time</br>contact me at grantsquires@disroot.org</br></br>"
-                    colors = ['#cdb4db','#ffc8dd','#ffafcc','#bde0fe','#a2d2ff']
-                    for(let co of colors){
-                        document.getElementById("history").innerHTML += "<pre style='margin-bottom:-2px;display:inline-block;height:25px;width:30px;background-color:"+co+";'></pre>"
+                    add += "</td><td style='padding:5px;'>hello, i am grant, they/them</br>i am mostly a typescript and c++ dev, but</br>i can work in most languages</br>--</br>i enjoy manga, and coding in free time</br>contact me at grantsquires@disroot.org</br></br>"
+                    colors = ['#cdb4db', '#ffc8dd', '#ffafcc', '#bde0fe', '#a2d2ff']
+                    for (let co of colors) {
+                        add += "<pre style='margin-bottom:-2px;display:inline-block;height:25px;width:30px;background-color:" + co + ";'></pre>"
                     }
-                    document.getElementById("history").innerHTML += "</br>"
-                    colors = ['#a81d61','#ff218e','#fcd800','#0194fc','#007cd5']
-                    for(let co of colors){
-                        document.getElementById("history").innerHTML += "<pre style='display:inline-block;height:25px;width:30px;background-color:"+co+";'></pre>"
+                    add += "</br>"
+                    colors = ['#a81d61', '#ff218e', '#fcd800', '#0194fc', '#007cd5']
+                    for (let co of colors) {
+                        add += "<pre style='display:inline-block;height:25px;width:30px;background-color:" + co + ";'></pre>"
                     }
-                    
-                    document.getElementById("history").innerHTML +="</br></br>"
 
+                    add += "</td></tr></table></br></br>"
+                    document.getElementById("history").innerHTML += add
                     break;
                 case 'clear':
                     document.getElementById("history").innerHTML = '';
                     break;
                 case 'echo':
-                    let l = stripped.splice(1, 1)
-                    document.getElementById("history").innerHTML += l + "</br>";
+                    document.getElementById("history").innerHTML += com.substr(4) + "</br>";
                     break;
                 case 'help':
-                    document.getElementById("history").innerHTML += "jssh -- version 1.0.0 (dev)</br></br>commands: neofetch, help,</br> cat [path],pwd,</br>ls [path] [-a], cd [path],</br>clear, echo [str]</br>"
+                    document.getElementById("history").innerHTML += "jssh -- version 1.0.0 (dev)</br></br>commands: neofetch, help,</br> cat [path],pwd,</br>ls [path] [-a], cd [path],</br>clear, echo [str],jssh</br>"
                     break;
                 case 'cat':
 
@@ -247,7 +261,7 @@
 
     </div>
     <form autocomplete="off" onsubmit="ex();return false;">
-        λ <input id="line" style="width:95%;">
+        λ <input id="line" style="width:95%;" onblur="this.focus()" autofocus>
         <input type="submit" style="display: none" />
     </form>
 
