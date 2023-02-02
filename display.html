@@ -28,7 +28,7 @@
 
         .head-border {
             width: calc(100%);
-            background-color: #010081;
+            background: linear-gradient(90deg, rgba(1,0,129,1) 0%, rgba(0,128,128,1) 100%);
             height: 25px;
             position: absolute;
             top: 0;
@@ -95,6 +95,47 @@
             cursor: ew-resize;
 
         }
+        .resize-ne {
+            position: absolute;
+            right: -3px;
+            top: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: ne-resize;
+
+        }
+        .resize-es {
+            position: absolute;
+            right: -3px;
+            bottom: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: se-resize;
+
+        }
+        .resize-sw {
+            position: absolute;
+            left: -3px;
+            bottom: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: sw-resize;
+
+        }
+        .resize-nw {
+            position: absolute;
+            left: -3px;
+            top: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: nw-resize;
+
+        }
+
 
         ::-webkit-scrollbar {
             display: none;
@@ -137,6 +178,11 @@
             a += "</div><div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
             a += "</div>"
             a += "</div>"
+            
+            a += "<div id='" + uid + "-resize-ne' class='resize-ne'></div>"
+            a += "<div id='" + uid + "-resize-nw' class='resize-nw'></div>"
+            a += "<div id='" + uid + "-resize-sw' class='resize-sw'></div>"
+            a += "<div id='" + uid + "-resize-es' class='resize-es'></div>"
             document.getElementById("root").innerHTML += a
             //console.log(document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight))
             document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
@@ -178,7 +224,7 @@
                             elem.style.cursor = ''
                         })
                         document.onmousemove = ((evm) => {
-                            console.log(elem.id)
+                            //console.log(elem.id)
                             elep.style.left = (elep.offsetLeft - (px - evm.clientX)) + "px"
                             elep.style.top = (elep.offsetTop - (py - evm.clientY)) + "px"
                             px = (evm.clientX)
@@ -189,7 +235,7 @@
                 let minx = 150;
                 let miny = 150;
 
-                ['resize-s', 'resize-n', 'resize-e', 'resize-w'].forEach((sel) => {
+                ['resize-s', 'resize-n', 'resize-e', 'resize-w','resize-ne','resize-nw','resize-sw','resize-es'].forEach((sel) => {
                     for (let ii = 0; ii != elec.length; ii++) {
                         if (elec.item(ii).className == sel) {
                             elem = elec.item(ii)
@@ -202,21 +248,29 @@
                             py = ev.clientY
                             if (sel == 'resize-s' || sel == 'resize-n')
                                 elem.style.cursor = 'ns-resize'
-                            else
+                            else if(sel == 'resize-e' || sel == 'resize-w')
                                 elem.style.cursor = 'ew-resize'
+                            else if(sel == 'resize-ne')
+                                elem.style.cursor = 'ne-resize'
+                            else if(sel == 'resize-nw')
+                                elem.style.cursor = 'nw-resize'
+                            else if(sel == 'resize-sw')
+                                elem.style.cursor = 'sw-resize'
+                            else if(sel == 'resize-es')
+                                elem.style.cursor = 'se-resize'
                             document.body.style.userSelect = "none"
                             document.onmouseup = ((evu) => {
                                 document.body.style.userSelect = "unset"
                                 document.onmousemove = null
                                 document.onmouseup = null
-                                document.body.style.cursor = 'initial'
+                                document.body.style.cursor = ''
 
                             })
                             document.onmousemove = ((evm) => {
-                                if (sel == 'resize-s')
+                                if (sel == 'resize-s' || sel == 'resize-es' || sel == 'resize-sw')
                                     if ((parseInt(elep.style.height.replace("px", "")) + (evm.clientY - py)) > miny) {
                                         elep.style.height = (parseInt(elep.style.height.replace("px", "")) + (evm.clientY - py)) + "px"
-                                    } if (sel == 'resize-n') {
+                                    } if (sel == 'resize-n' || sel == 'resize-nw' || sel == 'resize-ne') {
                                         if ((parseInt(elep.style.height.replace("px", "")) - (evm.clientY - py)) > miny) {
                                             elep.style.top = (elep.offsetTop - (py - evm.clientY)) + "px"
                                             elep.style.height = (parseInt(elep.style.height.replace("px", "")) - (evm.clientY - py)) + "px"
@@ -225,10 +279,10 @@
                                             //document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
                                         }
                                     }
-                                if (sel == 'resize-e')
+                                if (sel == 'resize-e' || sel == 'resize-es' || sel == 'resize-ne')
                                     if ((parseInt(elep.style.width.replace("px", "")) + (evm.clientX - px)) > minx) {
                                         elep.style.width = (parseInt(elep.style.width.replace("px", "")) + (evm.clientX - px)) + "px"
-                                    } if (sel == 'resize-w') {
+                                    } if (sel == 'resize-w' || sel == 'resize-nw' || sel == 'resize-sw') {
                                         //console.log((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)))
                                         if ((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)) > minx) {
                                             elep.style.left = (elep.offsetLeft - (px - evm.clientX)) + "px"
@@ -236,7 +290,7 @@
                                         }
                                     }
                                 //
-                                if (sel == 'resize-s' || sel == 'resize-n') {
+                                //if (sel == 'resize-s' || sel == 'resize-n' || ) {
                                     for (let iii = 0; iii != elem.parentElement.parentElement.parentElement.children.length; iii++) {
                                         //console.log(elem.parentElement.parentElement.parentElement.children.item(iii).className)
                                         if (elem.parentElement.parentElement.parentElement.children.item(iii).className == "content-root") {
@@ -272,7 +326,7 @@
                                             break
                                         }
                                     }
-                                }
+                                //}
                                 py = (evm.clientY)
                                 px = (evm.clientX)
 
@@ -346,7 +400,7 @@
                             //console.log(elem.clientHeight/2 - elem.offsetTop - (py - evm.clientY))
                             if (z >= 0 && z < elem.parentElement.clientHeight - elem.clientHeight) {
                                 elem.style.top = z
-                                con.parentElement.scrollTop = ((z / (elem.parentElement.clientHeight - elem.clientHeight)) * (con.scrollHeight - elem.parentElement.clientHeight))
+                                con.parentElement.scrollTop = ((z / (elem.parentElement.clientHeight - elem.clientHeight)) * (con.scrollHeight - elem.parentElement.clientHeight +24))
                             }
                             py = (evm.clientY)
                         })
