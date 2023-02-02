@@ -276,7 +276,7 @@
                     }
                 })
                 let temp
-
+                let scrolling = false
                 for (let ii = 0; ii != elec.length; ii++) {
 
                     if (elec.item(ii).className == 'content-root') {
@@ -295,11 +295,15 @@
 
                                             if (elec.item(ii).children.item(iiiii).className == 'content-content') {
                                                 //console.log(elec.item(ii).children.item(iiiii), "hi")
+                                                con = elec.item(ii).children.item(iiiii)
+
                                                 elec.item(ii).onscroll = ((ev) => {
-                                                    let aaaa = (elec.item(ii).clientHeight - elem.clientHeight)
-                                                    let scro = (elec.item(ii).scrollTop / (elec.item(ii).scrollHeight - elec.item(ii).clientHeight))
-                                                    //console.log(aaaa, (elec.item(ii).scrollHeight - elec.item(ii).clientTop))
-                                                    elem.style.top = scro * aaaa + "px"
+                                                    if (!scrolling) {
+                                                        let aaaa = (elec.item(ii).clientHeight - elem.clientHeight)
+                                                        let scro = (elec.item(ii).scrollTop / (elec.item(ii).scrollHeight - elec.item(ii).clientHeight))
+                                                        //console.log(aaaa, (elec.item(ii).scrollHeight - elec.item(ii).clientTop))
+                                                        elem.style.top = scro * aaaa + "px"
+                                                    }
                                                 })
                                             }
                                         }
@@ -328,14 +332,17 @@
                             document.onmouseup = null
                             document.body.style.cursor = 'initial'
                             elem.style.cursor = ''
+                            scrolling = false
                         })
                         document.onmousemove = ((evm) => {
-
+                            scrolling = true
                             let z = (elem.offsetTop - (py - evm.clientY))
                             //let b = (elem.clientHeight - elem.offsetTop - (py - evm.clientY))
                             //console.log(elem.clientHeight/2 - elem.offsetTop - (py - evm.clientY))
-                            if (z > -1 && z < elem.parentElement.clientHeight - elem.clientHeight)
+                            if (z > -1 && z < elem.parentElement.clientHeight - elem.clientHeight) {
                                 elem.style.top = z + "px"
+                                con.parentElement.scrollTop = ((z / (elem.parentElement.clientHeight - elem.clientHeight)) * (con.scrollHeight - elem.parentElement.clientHeight))
+                            }
                             py = (evm.clientY)
                         })
                     })
