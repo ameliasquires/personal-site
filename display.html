@@ -2,17 +2,18 @@
 
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: f98;
             src: url(src/98.ttf);
         }
+
         * {
             margin: 0;
             font-family: f98;
-            
+
             scrollbar-width: none;
         }
 
@@ -55,7 +56,7 @@
             margin-top: 2.5%;
             margin-bottom: 2.5%;
             overflow: hidden;
-            
+
         }
 
         .resize-n {
@@ -92,34 +93,36 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0);
             cursor: ew-resize;
-            
+
         }
+
         ::-webkit-scrollbar {
             display: none;
         }
-        .scrollbar{
-            width:10px;
+
+        .scrollbar {
+            width: 10px;
             height: calc(100% - 26px);
-            background-color: #aaaaaa ;
+            background-color: #aaaaaa;
             position: absolute;
-            bottom:0;
-            right:0;
+            bottom: 0;
+            right: 0;
         }
-        .scrollbar-point{
-            width:100%;
-            background-color: #919191 ;
+
+        .scrollbar-point {
+            width: 100%;
+            background-color: #919191;
             position: absolute;
-            top:0;
+            top: 0;
         }
-        
     </style>
     <script>
-        function window_create(uid, name,content) {
-            let lines =content.split("</br>").length
+        function window_create(uid, name, content) {
+            let lines = content.split("</br>").length
             let a = ''
-            a += "<div id='" + uid + "-root' class='window' style='width:"+document.body.clientWidth*.56+"px;height:"+document.body.clientHeight*.30+"px;top:0px;left:0px;position:absolute;' window-name='" + name + "'>"
+            a += "<div id='" + uid + "-root' class='window' style='width:" + document.body.clientWidth * .56 + "px;height:" + document.body.clientHeight * .30 + "px;top:0px;left:0px;position:absolute;' window-name='" + name + "'>"
             //console.log(document.getElementById(uid).attributes["window-name"].value)
-            a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>"+name+"</div>"
+            a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>" + name + "</div>"
             a += "<div id='" + uid + "-close' class='close-button' window-name='" + name + "'>" + `<svg draggable="false" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-3px;top:0px;" xmlns:xlink="http://www.w3.org/1999/xlink" width="23px" height="20px" viewBox="0 0 23 20" version="1.1">
 <g id="surface1">
 <path style=" stroke:none;fill-rule:evenodd;fill:rgb(2.745098%,3.137255%,2.745098%);fill-opacity:1;" d="M 8.476562 6.042969 C 9.042969 6.042969 9.613281 6.042969 10.179688 6.042969 C 10.179688 6.332031 10.179688 6.625 10.179688 6.914062 C 10.464844 6.914062 10.746094 6.914062 11.03125 6.914062 C 11.03125 7.203125 11.03125 7.492188 11.03125 7.78125 C 11.597656 7.78125 12.167969 7.78125 12.734375 7.78125 C 12.734375 7.492188 12.734375 7.203125 12.734375 6.914062 C 13.019531 6.914062 13.304688 6.914062 13.585938 6.914062 C 13.585938 6.625 13.585938 6.332031 13.585938 6.042969 C 14.15625 6.042969 14.722656 6.042969 15.289062 6.042969 C 15.289062 6.332031 15.289062 6.625 15.289062 6.914062 C 15.007812 6.914062 14.722656 6.914062 14.4375 6.914062 C 14.4375 7.203125 14.4375 7.492188 14.4375 7.78125 C 14.15625 7.78125 13.871094 7.78125 13.585938 7.78125 C 13.585938 8.074219 13.585938 8.363281 13.585938 8.652344 C 13.304688 8.652344 13.019531 8.652344 12.734375 8.652344 C 12.734375 8.941406 12.734375 9.230469 12.734375 9.523438 C 13.019531 9.523438 13.304688 9.523438 13.585938 9.523438 C 13.585938 9.8125 13.585938 10.101562 13.585938 10.390625 C 13.871094 10.390625 14.15625 10.390625 14.4375 10.390625 C 14.4375 10.679688 14.4375 10.972656 14.4375 11.261719 C 14.722656 11.261719 15.007812 11.261719 15.289062 11.261719 C 15.289062 11.550781 15.289062 11.839844 15.289062 12.128906 C 14.722656 12.128906 14.15625 12.128906 13.585938 12.128906 C 13.585938 11.839844 13.585938 11.550781 13.585938 11.261719 C 13.304688 11.261719 13.019531 11.261719 12.734375 11.261719 C 12.734375 10.972656 12.734375 10.679688 12.734375 10.390625 C 12.167969 10.390625 11.597656 10.390625 11.03125 10.390625 C 11.03125 10.679688 11.03125 10.972656 11.03125 11.261719 C 10.746094 11.261719 10.464844 11.261719 10.179688 11.261719 C 10.179688 11.550781 10.179688 11.839844 10.179688 12.128906 C 9.613281 12.128906 9.042969 12.128906 8.476562 12.128906 C 8.476562 11.839844 8.476562 11.550781 8.476562 11.261719 C 8.761719 11.261719 9.042969 11.261719 9.328125 11.261719 C 9.328125 10.972656 9.328125 10.679688 9.328125 10.390625 C 9.613281 10.390625 9.894531 10.390625 10.179688 10.390625 C 10.179688 10.101562 10.179688 9.8125 10.179688 9.523438 C 10.464844 9.523438 10.746094 9.523438 11.03125 9.523438 C 11.03125 9.230469 11.03125 8.941406 11.03125 8.652344 C 10.746094 8.652344 10.464844 8.652344 10.179688 8.652344 C 10.179688 8.363281 10.179688 8.074219 10.179688 7.78125 C 9.894531 7.78125 9.613281 7.78125 9.328125 7.78125 C 9.328125 7.492188 9.328125 7.203125 9.328125 6.914062 C 9.042969 6.914062 8.761719 6.914062 8.476562 6.914062 C 8.476562 6.625 8.476562 6.332031 8.476562 6.042969 Z M 8.476562 6.042969 "/>
@@ -130,16 +133,22 @@
             a += "<div id='" + uid + "-resize-e' class='resize-e'></div>"
             a += "<div id='" + uid + "-resize-w' class='resize-w'></div>"
             a += "<div style='height:25px;'></div>"
-            a += "<div id='"+ uid +"-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 25px);width:100%'><div id='"+uid+"-content-content'>"+content
-            a+= "</div><div id='"+uid+"-content-scrollbar' class='scrollbar'><div id='"+uid+"-content-scrollbar-point' style='height:calc(100% - "+lines*4+"px);' class='scrollbar-point'></div>"
+            a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 25px);width:100%'><div id='" + uid + "-content-content' class='content-content'>" + content
+            a += "</div><div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
             a += "</div>"
             a += "</div>"
             document.getElementById("root").innerHTML += a
+            //console.log(document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight))
+            document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
+            if (document.getElementById(uid + "-content-scrollbar-point").clientHeight > document.getElementById(uid + "-content-root").clientHeight)
+                document.getElementById(uid + "-content-scrollbar-point").style.display = 'none'
+            //console.log(document.getElementById(uid + "-content-scrollbar-point"))
             let elems = document.getElementsByClassName("window")
             for (let i = 0; i != elems.length; i++) {
                 //let elem = elems.item(i).children[0]
                 let elec = elems.item(i).children
                 let elem
+                //console.log(elec)
                 for (let ii = 0; ii != elec.length; ii++) {
                     if (elec.item(ii).className == 'head-border') {
                         elem = elec.item(ii)
@@ -165,7 +174,7 @@
                             document.body.style.userSelect = "unset"
                             document.onmousemove = null
                             document.onmouseup = null
-                            document.body.style.cursor = 'initial'
+                            document.body.style.cursor = ''
                             elem.style.cursor = ''
                         })
                         document.onmousemove = ((evm) => {
@@ -180,59 +189,92 @@
                 let minx = 150;
                 let miny = 150;
 
-                ['resize-s','resize-n','resize-e','resize-w'].forEach((sel)=>{
+                ['resize-s', 'resize-n', 'resize-e', 'resize-w'].forEach((sel) => {
                     for (let ii = 0; ii != elec.length; ii++) {
-                    if (elec.item(ii).className == sel) {
-                        elem = elec.item(ii)
-                        break
-                    }
-                }
-                if (elem.className == sel) {
-                    elem.onmousedown = ((ev) => {
-                        px = ev.clientX
-                        py = ev.clientY
-                        if(sel=='resize-s'||sel=='resize-n')
-                        elem.style.cursor = 'ns-resize'
-                        else
-                        elem.style.cursor = 'ew-resize'
-                        document.body.style.userSelect = "none"
-                        document.onmouseup = ((evu) => {
-                            document.body.style.userSelect = "unset"
-                            document.onmousemove = null
-                            document.onmouseup = null
-                            document.body.style.cursor = 'initial'
-                            
-                        })
-                        document.onmousemove = ((evm) => {
-                            if(sel=='resize-s')
-                            if((parseInt(elep.style.height.replace("px","")) + (evm.clientY-py))>miny){
-                            elep.style.height = (parseInt(elep.style.height.replace("px","")) + (evm.clientY-py)) + "px"
-                            }if(sel=='resize-n'){
-                                if((parseInt(elep.style.height.replace("px","")) - (evm.clientY-py))>miny){
-                            elep.style.top = (elep.offsetTop - (py - evm.clientY)) + "px"
-                            elep.style.height = (parseInt(elep.style.height.replace("px","")) - (evm.clientY-py)) + "px"
-                            }}
-                            if(sel=='resize-e')
-                            if((parseInt(elep.style.width.replace("px","")) + (evm.clientX-px))>minx){
-                            elep.style.width = (parseInt(elep.style.width.replace("px","")) + (evm.clientX-px)) + "px"
-                            }if(sel=='resize-w'){
-                                console.log((parseInt(elep.style.width.replace("px","")) - (evm.clientX-px)))
-                                if((parseInt(elep.style.width.replace("px","")) - (evm.clientX-px))>minx){
-                            elep.style.left = (elep.offsetLeft - (px - evm.clientX)) + "px"
-                            elep.style.width = (parseInt(elep.style.width.replace("px","")) - (evm.clientX-px)) + "px"
-                            }
+                        if (elec.item(ii).className == sel) {
+                            elem = elec.item(ii)
+                            break
                         }
-                            //
-                            py = (evm.clientY)
-                            px = (evm.clientX)
+                    }
+                    if (elem.className == sel) {
+                        elem.onmousedown = ((ev) => {
+                            px = ev.clientX
+                            py = ev.clientY
+                            if (sel == 'resize-s' || sel == 'resize-n')
+                                elem.style.cursor = 'ns-resize'
+                            else
+                                elem.style.cursor = 'ew-resize'
+                            document.body.style.userSelect = "none"
+                            document.onmouseup = ((evu) => {
+                                document.body.style.userSelect = "unset"
+                                document.onmousemove = null
+                                document.onmouseup = null
+                                document.body.style.cursor = 'initial'
 
+                            })
+                            document.onmousemove = ((evm) => {
+                                if (sel == 'resize-s')
+                                    if ((parseInt(elep.style.height.replace("px", "")) + (evm.clientY - py)) > miny) {
+                                        elep.style.height = (parseInt(elep.style.height.replace("px", "")) + (evm.clientY - py)) + "px"
+                                    } if (sel == 'resize-n') {
+                                        if ((parseInt(elep.style.height.replace("px", "")) - (evm.clientY - py)) > miny) {
+                                            elep.style.top = (elep.offsetTop - (py - evm.clientY)) + "px"
+                                            elep.style.height = (parseInt(elep.style.height.replace("px", "")) - (evm.clientY - py)) + "px"
+                                            //console.log(elem.parentElement.parentElement.parentElement)
+                                            for (let iii = 0; iii != elem.parentElement.parentElement.parentElement.children.length; iii++) {
+                                                //console.log(elem.parentElement.parentElement.parentElement.children.item(iii).className)
+                                                if (elem.parentElement.parentElement.parentElement.children.item(iii).className == "content-root") {
+
+                                                    for (let iiii = 0; iiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiii++) {
+                                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).className == "scrollbar") {
+                                                            for (let iiiii = 0; iiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.length; iii++) {
+                                                                if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).className == "scrollbar-point") {
+                                                                    for (let iiiiii = 0; iiiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiiiii++) {
+
+                                                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).className == "content-content") {
+                                                                            if (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) < elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) {
+                                                                                elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.display = "block"
+                                                                                elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.height = (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight)) + "px"
+                                                                            } else {
+                                                                                elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.display = "none"
+                                                                            }
+                                                                            break
+                                                                        }
+                                                                    }
+
+                                                                    break
+                                                                }
+                                                            }
+                                                            break
+                                                        }
+                                                    }
+                                                    break
+                                                }
+                                            }
+                                            //document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
+                                        }
+                                    }
+                                if (sel == 'resize-e')
+                                    if ((parseInt(elep.style.width.replace("px", "")) + (evm.clientX - px)) > minx) {
+                                        elep.style.width = (parseInt(elep.style.width.replace("px", "")) + (evm.clientX - px)) + "px"
+                                    } if (sel == 'resize-w') {
+                                        console.log((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)))
+                                        if ((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)) > minx) {
+                                            elep.style.left = (elep.offsetLeft - (px - evm.clientX)) + "px"
+                                            elep.style.width = (parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)) + "px"
+                                        }
+                                    }
+                                //
+                                py = (evm.clientY)
+                                px = (evm.clientX)
+
+                            })
                         })
-                    })
-                }
+                    }
                 })
                 let temp
                 for (let ii = 0; ii != elec.length; ii++) {
-                    
+
                     if (elec.item(ii).className == 'content-root') {
                         console.log(elec.item(ii).className)
                         temp = elec.item(ii).children
@@ -270,17 +312,17 @@
                             elem.style.cursor = ''
                         })
                         document.onmousemove = ((evm) => {
-                            
+
                             let z = (elem.offsetTop - (py - evm.clientY))
                             //let b = (elem.clientHeight - elem.offsetTop - (py - evm.clientY))
                             //console.log(elem.clientHeight/2 - elem.offsetTop - (py - evm.clientY))
-                            if(z>-1&&z<elem.parentElement.clientHeight-elem.clientHeight)
-                            elem.style.top = z + "px"
+                            if (z > -1 && z < elem.parentElement.clientHeight - elem.clientHeight)
+                                elem.style.top = z + "px"
                             py = (evm.clientY)
                         })
                     })
                 }
-                
+
             }
 
 
@@ -290,7 +332,8 @@
     </script>
 </head>
 
-<body onload="window_create(1,'test!','HIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHI</br></br></br></br></br></br>fwefsdf</br></br></br></br></br></br></br>fwefwr</br></br></br></br></br></br>IIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIII')">
+<body
+    onload="window_create(1,'test!','HIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHI</br></br></br></br></br></br>fwefsdf</br></br></br></br></br></br></br>fwefwr</br>IIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIII')">
     <div id="root"></div>
 </body>
 
