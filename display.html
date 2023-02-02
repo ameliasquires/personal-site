@@ -248,9 +248,14 @@
                                                             for (let iiiiii = 0; iiiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiiiii++) {
 
                                                                 if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).className == "content-content") {
+
                                                                     if (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) < elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) {
                                                                         elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).style.display = "block"
-                                                                        elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.height = (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight)) + "px"
+                                                                        elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.height = (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight))
+                                                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).offsetTop > elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).clientHeight - elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).clientHeight) {
+                                                                            elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.top = elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).clientHeight - elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).clientHeight
+                                                                        }
+                                                                        //elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.top = Math.min(elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.top, elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight)
                                                                     } else {
                                                                         elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).style.display = "none"
                                                                     }
@@ -302,7 +307,7 @@
                                                         let aaaa = (elec.item(ii).clientHeight - elem.clientHeight)
                                                         let scro = (elec.item(ii).scrollTop / (elec.item(ii).scrollHeight - elec.item(ii).clientHeight))
                                                         //console.log(aaaa, (elec.item(ii).scrollHeight - elec.item(ii).clientTop))
-                                                        elem.style.top = scro * aaaa + "px"
+                                                        elem.style.top = scro * aaaa
                                                     }
                                                 })
                                             }
@@ -339,8 +344,8 @@
                             let z = (elem.offsetTop - (py - evm.clientY))
                             //let b = (elem.clientHeight - elem.offsetTop - (py - evm.clientY))
                             //console.log(elem.clientHeight/2 - elem.offsetTop - (py - evm.clientY))
-                            if (z > -1 && z < elem.parentElement.clientHeight - elem.clientHeight) {
-                                elem.style.top = z + "px"
+                            if (z >= 0 && z < elem.parentElement.clientHeight - elem.clientHeight) {
+                                elem.style.top = z
                                 con.parentElement.scrollTop = ((z / (elem.parentElement.clientHeight - elem.clientHeight)) * (con.scrollHeight - elem.parentElement.clientHeight))
                             }
                             py = (evm.clientY)
