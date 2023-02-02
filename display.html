@@ -27,12 +27,12 @@
         }
 
         .head-border {
-            width: calc(100% - 2px);
+            width: calc(100%);
             background-color: #010081;
             height: 25px;
             position: absolute;
-            top: 1px;
-            left: 1px;
+            top: 0;
+            left: 0;
             cursor: grab;
         }
 
@@ -102,7 +102,7 @@
 
         .scrollbar {
             width: 10px;
-            height: calc(100% - 26px);
+            height: calc(100% - 25px);
             background-color: #aaaaaa;
             position: absolute;
             bottom: 0;
@@ -133,7 +133,7 @@
             a += "<div id='" + uid + "-resize-e' class='resize-e'></div>"
             a += "<div id='" + uid + "-resize-w' class='resize-w'></div>"
             a += "<div style='height:25px;'></div>"
-            a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 25px);width:100%'><div id='" + uid + "-content-content' class='content-content'>" + content
+            a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 26px);width:100%'><div id='" + uid + "-content-content' class='content-content'>" + content
             a += "</div><div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
             a += "</div>"
             a += "</div>"
@@ -141,7 +141,7 @@
             //console.log(document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight))
             document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
             if (document.getElementById(uid + "-content-scrollbar-point").clientHeight > document.getElementById(uid + "-content-root").clientHeight)
-                document.getElementById(uid + "-content-scrollbar-point").style.display = 'none'
+                document.getElementById(uid + "-content-scrollbar").style.display = 'none'
             //console.log(document.getElementById(uid + "-content-scrollbar-point"))
             let elems = document.getElementsByClassName("window")
             for (let i = 0; i != elems.length; i++) {
@@ -221,36 +221,7 @@
                                             elep.style.top = (elep.offsetTop - (py - evm.clientY)) + "px"
                                             elep.style.height = (parseInt(elep.style.height.replace("px", "")) - (evm.clientY - py)) + "px"
                                             //console.log(elem.parentElement.parentElement.parentElement)
-                                            for (let iii = 0; iii != elem.parentElement.parentElement.parentElement.children.length; iii++) {
-                                                //console.log(elem.parentElement.parentElement.parentElement.children.item(iii).className)
-                                                if (elem.parentElement.parentElement.parentElement.children.item(iii).className == "content-root") {
 
-                                                    for (let iiii = 0; iiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiii++) {
-                                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).className == "scrollbar") {
-                                                            for (let iiiii = 0; iiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.length; iii++) {
-                                                                if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).className == "scrollbar-point") {
-                                                                    for (let iiiiii = 0; iiiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiiiii++) {
-
-                                                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).className == "content-content") {
-                                                                            if (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) < elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) {
-                                                                                elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.display = "block"
-                                                                                elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.height = (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight)) + "px"
-                                                                            } else {
-                                                                                elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.display = "none"
-                                                                            }
-                                                                            break
-                                                                        }
-                                                                    }
-
-                                                                    break
-                                                                }
-                                                            }
-                                                            break
-                                                        }
-                                                    }
-                                                    break
-                                                }
-                                            }
                                             //document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
                                         }
                                     }
@@ -258,13 +229,45 @@
                                     if ((parseInt(elep.style.width.replace("px", "")) + (evm.clientX - px)) > minx) {
                                         elep.style.width = (parseInt(elep.style.width.replace("px", "")) + (evm.clientX - px)) + "px"
                                     } if (sel == 'resize-w') {
-                                        console.log((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)))
+                                        //console.log((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)))
                                         if ((parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)) > minx) {
                                             elep.style.left = (elep.offsetLeft - (px - evm.clientX)) + "px"
                                             elep.style.width = (parseInt(elep.style.width.replace("px", "")) - (evm.clientX - px)) + "px"
                                         }
                                     }
                                 //
+                                if (sel == 'resize-s' || sel == 'resize-n') {
+                                    for (let iii = 0; iii != elem.parentElement.parentElement.parentElement.children.length; iii++) {
+                                        //console.log(elem.parentElement.parentElement.parentElement.children.item(iii).className)
+                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).className == "content-root") {
+
+                                            for (let iiii = 0; iiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiii++) {
+                                                if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).className == "scrollbar") {
+                                                    for (let iiiii = 0; iiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.length; iii++) {
+                                                        if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).className == "scrollbar-point") {
+                                                            for (let iiiiii = 0; iiiiii != elem.parentElement.parentElement.parentElement.children.item(iii).children.length; iiiiii++) {
+
+                                                                if (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).className == "content-content") {
+                                                                    if (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) < elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight) {
+                                                                        elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).style.display = "block"
+                                                                        elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).children.item(iiiii).style.height = (elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight / (elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiiiii).clientHeight / elem.parentElement.parentElement.parentElement.children.item(iii).clientHeight)) + "px"
+                                                                    } else {
+                                                                        elem.parentElement.parentElement.parentElement.children.item(iii).children.item(iiii).style.display = "none"
+                                                                    }
+                                                                    break
+                                                                }
+                                                            }
+
+                                                            break
+                                                        }
+                                                    }
+                                                    break
+                                                }
+                                            }
+                                            break
+                                        }
+                                    }
+                                }
                                 py = (evm.clientY)
                                 px = (evm.clientX)
 
@@ -273,19 +276,34 @@
                     }
                 })
                 let temp
+
                 for (let ii = 0; ii != elec.length; ii++) {
 
                     if (elec.item(ii).className == 'content-root') {
-                        console.log(elec.item(ii).className)
+                        //console.log(elec.item(ii).className)
                         temp = elec.item(ii).children
                         for (let iii = 0; iii != temp.length; iii++) {
-                            console.log(temp.item(iii).className)
+                            //console.log(temp.item(iii).className)
                             if (temp.item(iii).className == 'scrollbar') {
                                 temp = temp.item(iii).children
                                 for (let iiii = 0; iiii != temp.length; iiii++) {
-                                    console.log(temp.item(iiii).className)
+                                    //console.log(temp.item(iiii).className)
                                     if (temp.item(iiii).className == 'scrollbar-point') {
                                         elem = temp.item(iiii)
+
+                                        for (let iiiii = 0; iiiii != elec.item(ii).children.length; iiiii++) {
+
+                                            if (elec.item(ii).children.item(iiiii).className == 'content-content') {
+                                                //console.log(elec.item(ii).children.item(iiiii), "hi")
+                                                elec.item(ii).onscroll = ((ev) => {
+                                                    let aaaa = (elec.item(ii).clientHeight - elem.clientHeight)
+                                                    let scro = (elec.item(ii).scrollTop / (elec.item(ii).scrollHeight - elec.item(ii).clientHeight))
+                                                    //console.log(aaaa, (elec.item(ii).scrollHeight - elec.item(ii).clientTop))
+                                                    elem.style.top = scro * aaaa + "px"
+                                                })
+                                            }
+                                        }
+
                                         break
                                     }
                                 }
@@ -333,7 +351,7 @@
 </head>
 
 <body
-    onload="window_create(1,'test!','HIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHI</br></br></br></br></br></br>fwefsdf</br></br></br></br></br></br></br>fwefwr</br>IIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIII')">
+    onload="window_create(1,'test!','HIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHI</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>fwefsdf</br></br></br></br></br></br></br>fwefwr</br>IIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIII')">
     <div id="root"></div>
 </body>
 
