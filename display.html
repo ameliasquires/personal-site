@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <!--<script src="https://raw.githubusercontent.com/a-weeb-programmer/libcute/main/src/libcute.h"></script> lol-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
@@ -158,10 +159,11 @@
         }
     </style>
     <script>
-        function window_create(uid, name, content) {
+        function window_create(uid, name, content, options) {
+            let fon = (options.font ? options.font:'')
             let lines = content.split("</br>").length
             let a = ''
-            a += "<div id='" + uid + "-root' class='window' style='width:" + document.body.clientWidth * .56 + "px;height:" + document.body.clientHeight * .30 + "px;top:0px;left:0px;position:absolute;' window-name='" + name + "'>"
+            a += "<div id='" + uid + "-root' class='window' style=\"width:" + document.body.clientWidth * .56 + "px;height:" + document.body.clientHeight * .30 + "px;top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
             //console.log(document.getElementById(uid).attributes["window-name"].value)
             a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>" + name + "</div>"
             a += "<div id='" + uid + "-close' class='close-button' window-name='" + name + "'>" + `<svg draggable="false" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-3px;top:0px;" xmlns:xlink="http://www.w3.org/1999/xlink" width="23px" height="20px" viewBox="0 0 23 20" version="1.1">
@@ -417,7 +419,7 @@
 </head>
 
 <body
-    onload="window_create(1,'test!','HIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHI</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>fwefsdf</br></br></br></br></br></br></br>fwefwr</br>IIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIII')">
+    onload="window_create(1,'test!','HIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHI</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>fwefsdf</br></br></br></br></br></br></br>fwefwr</br>IIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIIIHIIII',{font:'Flow Circular'})">
     <div id="root"></div>
 </body>
 
