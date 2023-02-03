@@ -318,9 +318,10 @@
                         for (let iii = 0; iii != elem.children.length; iii++) {
                             if (elem.children.item(iii).className == "close-button") {
                                 //console.log(elem.children.item(iii))
+                                let ii = elems.item(i)
                                 elem.children.item(iii).onmousedown = ((ev) => {
                                     //console.log(elems.item(i))
-                                    elems.item(i).remove()
+                                    ii.remove()
                                 })
                                 break
                             }
@@ -341,7 +342,6 @@
                         elep.style.zIndex = 1
                         document.body.style.cursor = 'grabbing'
                         elemhb.style.cursor = 'grabbing'
-                        console.log(elemhb)
                         px = ev.clientX
                         py = ev.clientY
                         document.body.style.userSelect = "none"
@@ -484,7 +484,6 @@
                                             if (elec.item(ii).children.item(iiiii).className == 'content-content') {
                                                 //console.log(elec.item(ii).children.item(iiiii), "hi")
                                                 con = elec.item(ii).children.item(iiiii)
-                                                console.log(con)
                                                 elec.item(ii).onscroll = ((ev) => {
                                                     if (!scrolling) {
                                                         let aaaa = (elec.item(ii).clientHeight - elem.clientHeight)
@@ -492,6 +491,40 @@
                                                         //console.log(aaaa, (elec.item(ii).scrollHeight - elec.item(ii).clientTop))
                                                         elem.style.top = scro * aaaa
                                                     }
+                                                })
+                                                elem.onmousedown = ((ev) => {
+                                                    let thi = elec.item(ii).children.item(iiiii)
+                                                    let eel = temp.item(iiii)
+                                                    document.body.style.cursor = 'grabbing'
+                                                    eel.style.cursor = 'grabbing'
+                                                    py = ev.clientY
+                                                    document.body.style.userSelect = "none"
+                                                    document.onmouseup = ((evu) => {
+                                                        document.body.style.userSelect = "unset"
+                                                        document.onmousemove = null
+                                                        document.onmouseup = null
+                                                        document.body.style.cursor = ''
+                                                        eel.style.cursor = 'grab'
+                                                        scrolling = false
+                                                    })
+                                                    document.onmousemove = ((evm) => {
+                                                        scrolling = true
+                                                        let z = (eel.offsetTop - (py - evm.clientY))
+                                                        //let b = (elem.clientHeight - elem.offsetTop - (py - evm.clientY))
+                                                        //console.log(elem.clientHeight/2 - elem.offsetTop - (py - evm.clientY))
+                                                        //console.log(z, elem.parentElement.clientHeight - elem.clientHeight)
+                                                        if (z >= 0 && z < eel.parentElement.clientHeight - eel.clientHeight) {
+                                                            eel.style.top = z
+                                                            thi.parentElement.scrollTop = ((z / (eel.parentElement.clientHeight - eel.clientHeight)) * (thi.scrollHeight - eel.parentElement.clientHeight + 24))
+                                                        } else {
+                                                            if (z < elem.parentElement.clientHeight - elem.clientHeight) {
+                                                                elem.style.top = 0
+                                                            } else {
+                                                                elem.style.top = elem.parentElement.clientHeight - elem.clientHeight
+                                                            }
+                                                        }
+                                                        py = (evm.clientY)
+                                                    })
                                                 })
                                                 break
                                             }
@@ -509,41 +542,11 @@
                 px = 0, py = 0;
 
                 if (elem.className == 'scrollbar-point') {
-                    elem.onmousedown = ((ev) => {
-                        let thi = con
-                        document.body.style.cursor = 'grabbing'
-                        elem.style.cursor = 'grabbing'
-                        py = ev.clientY
-                        document.body.style.userSelect = "none"
-                        document.onmouseup = ((evu) => {
-                            document.body.style.userSelect = "unset"
-                            document.onmousemove = null
-                            document.onmouseup = null
-                            document.body.style.cursor = ''
-                            elem.style.cursor = 'grab'
-                            scrolling = false
-                        })
-                        document.onmousemove = ((evm) => {
-                            scrolling = true
-                            let z = (elem.offsetTop - (py - evm.clientY))
-                            //let b = (elem.clientHeight - elem.offsetTop - (py - evm.clientY))
-                            //console.log(elem.clientHeight/2 - elem.offsetTop - (py - evm.clientY))
-                            //console.log(z, elem.parentElement.clientHeight - elem.clientHeight)
-                            if (z >= 0 && z < elem.parentElement.clientHeight - elem.clientHeight) {
-                                elem.style.top = z
-                                console.log(thi)
-                                thi.parentElement.scrollTop = ((z / (elem.parentElement.clientHeight - elem.clientHeight)) * (con.scrollHeight - elem.parentElement.clientHeight + 24))
-                            } /*else {
-                                if (z < elem.parentElement.clientHeight - elem.clientHeight) {
-                                    elem.style.top = 0
-                                } else {
-                                    elem.style.top = elem.parentElement.clientHeight - elem.clientHeight
-                                }
-                            }*/
-                            py = (evm.clientY)
-                        })
-                    })
+                    
+                    
                 }
+
+                
 
             }
 
