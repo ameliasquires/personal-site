@@ -171,9 +171,10 @@
             background-color: #c3c3c3;
             position: absolute;
             bottom: 0;
+            display: inline-block;
             left: 0;
         }
-
+        
         .bar-item {
             height: 80%;
             background-color: #c3c3c3;
@@ -186,6 +187,25 @@
             display: block;
             position: absolute;
             top: 0;
+        }
+        #bar-items{
+            height: 100%;
+            width: 100%;
+            position: relative;
+            display: block;
+        }
+        #bar-children{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+
+        }
+        #bar-menu{
+            display: block;
+            position:relative;
+            height: 100%;
+            background-color: red;
         }
     </style>
     <script>
@@ -205,6 +225,7 @@
             let put = ""
             let last_left = 0;
             let temp = []
+            bar.innerHTML = ""
             for (let i = 0; i != windows.length; i++) {
                 bar.innerHTML += "<div style='left:" + last_left + ";' id='" + windows.item(i).id + "' class='bar-item'>" + windows.item(i).getAttribute("window-name") + "</div>"
                 temp.push({ left: last_left, id: windows.item(i).id, width: bar.children.item(bar.children.length - 1).clientWidth + 5 })
@@ -250,23 +271,9 @@
                                 }
 
                             })
-                            let px = elemy.offsetLeft;
+                            let px = 0;
                             document.onmousemove = ((evm) => {
-                                let a = elemy.offsetLeft
-                                let zz = elemy.clientWidth
-                                let m = (a - (px - (evm.clientX - zz)))
-                                if (m >= 0 && m <= elemy.parentElement.parentElement.clientWidth - (elemy.clientWidth + 5)) {
-                                    elemy.style.left = m
-                                    px = evm.clientX - zz
-                                } else {
-                                    if (!(m >= 0)) {
-                                        elemy.style.left = 0;
-
-                                    } else {
-                                        elemy.style.left = elemy.parentElement.parentElement.clientWidth - (elemy.clientWidth + 5);
-                                    }
-                                }
-
+                                console.log(elemy.parentElement.clientWidth*(evm.clientX/elemy.parentElement.clientWidth)-elemy.parentElement.offsetLeft)
                                 //console.log((px - evm.clientX), px, evm.clientX, m)
 
                             })
@@ -278,7 +285,9 @@
         function window_create(uid, name, content) {
             let lines = content.split("</br>").length
             let a = ''
-            a += "<div id='" + uid + "-root' class='window' style=\"width:" + document.body.clientWidth * .56 + "px;height:" + document.body.clientHeight * .30 + "px;top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
+            let minx = 150;
+            let miny = 150;
+            a += "<div id='" + uid + "-root' class='window' style=\"width:" + Math.max(document.body.clientWidth * .56,minx) + "px;height:" + Math.max(miny,document.body.clientHeight * .30) + "px;top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
             //console.log(document.getElementById(uid).attributes["window-name"].value)
             a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>" + name + "</div>"
             a += "<div id='" + uid + "-close' class='close-button' window-name='" + name + "'>" + `<svg draggable="false" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-3px;top:0px;" xmlns:xlink="http://www.w3.org/1999/xlink" width="23px" height="20px" viewBox="0 0 23 20" version="1.1">
@@ -322,6 +331,7 @@
                                 elem.children.item(iii).onmousedown = ((ev) => {
                                     //console.log(elems.item(i))
                                     ii.remove()
+                                    load_bar()
                                 })
                                 break
                             }
@@ -361,8 +371,7 @@
                         })
                     })
                 }
-                let minx = 150;
-                let miny = 150;
+                
 
                 ['resize-s', 'resize-n', 'resize-e', 'resize-w', 'resize-ne', 'resize-nw', 'resize-sw', 'resize-es'].forEach((sel) => {
                     for (let ii = 0; ii != elec.length; ii++) {
@@ -561,12 +570,14 @@
     onload="window_create(1,'hewwo','hi</br></br></br></br></br></br></br></br></br></br></br></br>hi');window_create(2,'uwu','uwu');load_bar()">
     <div id="root">
         <div id="bar">
-            <div id="bar-items">
-
-            </div>
-            <div id="bar-menu">
-
-            </div>
+            <div id="bar-children">
+                <div id="bar-menu">uwu
+                </div>
+                <div id="bar-items">
+                </div>
+                
+            
+        </div>
         </div>
     </div>
 </body>
