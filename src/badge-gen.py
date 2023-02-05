@@ -1,3 +1,4 @@
+#include <stdio.h>
 import os
 directory = './badges'
 for filename in os.listdir(directory):
