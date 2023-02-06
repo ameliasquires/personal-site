@@ -205,10 +205,59 @@
         }
 
         #bar-menu {
-            display: block;
+            display: flex;
             position: relative;
-            height: 100%;
-            background-color: red;
+            height: calc(100% - 5px);
+            font-size: large;
+            padding: 3px;
+            user-select: none;
+            padding-left: 10px;
+            padding-right: 10px;
+            outline: 2px outset;
+            outline-offset: -2px;
+            cursor: pointer;
+
+            
+        }
+        #bar-menu-root {
+            padding-top: 2px;
+            height:280px;
+            width:180px;
+            background-color: #c7c7c7;
+            position: absolute;
+            border-style:outset;
+            bottom:30px;
+            display: none;
+        }
+        .bar-menu-item{
+            padding-left:5px;
+            width: 100%;
+            height:25px;
+            display:flex;
+            font-size: 14px;
+            font-weight: bold;
+            padding-top: 1px;
+        }
+        .bar-menu-image{
+            height: 18px;
+            padding-left:5px;
+            padding-right:5px;
+        }
+        .bar-menu-text{
+            position: absolute;
+            left:30px;
+            padding-top:2px;
+        }
+        .bar-menu-separator{
+            width:calc(100% - 20px);
+            height: 3px;
+            margin-bottom: 5px;
+            background-color: #a1a1a1;
+            border-style:none none solid none;
+            border-color:#dddddd;
+            border-width:2px;
+            left:10px;
+            position: relative;
         }
     </style>
     <script>
@@ -276,7 +325,15 @@
                             })
                             let px = 0;
                             document.onmousemove = ((evm) => {
-                                console.log(elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft))
+                                if((elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft + (elemy.clientWidth/2)))>0){
+                                    if((elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft - (elemy.clientWidth/2)))<elemy.parentElement.clientWidth -5){
+                                    elemy.style.left =(elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft + (elemy.clientWidth /2)))
+                                    }else {
+                                        elemy.style.left = elemy.parentElement.clientWidth - elemy.clientWidth - 5
+                                    }
+                                } else {
+                                    elemy.style.left = 0;
+                                }
                                 //console.log((px - evm.clientX), px, evm.clientX, m)
 
                             })
@@ -565,22 +622,45 @@
 
 
         }
+        function main(){
+            document.getElementById("bar-menu").onclick = ((ev)=>{
+                if(document.getElementById("bar-menu-root").style.display=="block")
+                document.getElementById("bar-menu-root").style.display = "none"
+                else
+                document.getElementById("bar-menu-root").style.display = "block"
+            })
+        }
 
     </script>
 </head>
 
 <body
-    onload="window_create(1,'hewwo','hi</br></br></br></br></br></br></br></br></br></br></br></br>hi');window_create(2,'uwu','uwu');load_bar()">
+    onload="window_create(1,'hewwo','hi</br></br></br></br></br></br></br></br></br></br></br></br>hi');window_create(2,'uwu','uwu');load_bar();main()">
     <div id="root">
         <div id="bar">
             <div id="bar-children">
-                <div id="bar-menu">uwu
+                <div id="bar-menu" ><img src="./src/img/windows.png"><pre> </pre>Start
+                    
                 </div>
                 <div id="bar-items">
                 </div>
 
 
             </div>
+        </div>
+        <div id="bar-menu-root">
+            <div class="bar-menu-item" id="bar-menu-windows-update"><img class="bar-menu-image" src="./src/img/update.png"><div class="bar-menu-text">Windows Update</div></div>
+            <div class="bar-menu-separator"></div>
+            <div class="bar-menu-item" id="bar-menu-programs"><img class="bar-menu-image" src="./src/img/programs.png"><div class="bar-menu-text">Programs</div></div>
+            <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image" src="./src/img/favorites.png"><div class="bar-menu-text">Favorites</div></div>
+            <div class="bar-menu-item" id="bar-menu-docs"><img class="bar-menu-image" src="./src/img/docs.png"><div class="bar-menu-text">Documents</div></div>
+            <div class="bar-menu-item" id="bar-menu-settings"><img class="bar-menu-image" style="height:25px" src="./src/img/settings.png"><div class="bar-menu-text">Settings</div></div>
+            <div class="bar-menu-item" id="bar-menu-find"><img class="bar-menu-image" style="height:25px" src="./src/img/find.png"><div class="bar-menu-text">Find</div></div>
+            <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" src="./src/img/help.png"><div class="bar-menu-text">Help</div></div>
+            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" src="./src/img/run.png"><div class="bar-menu-text">Run</div></div>
+            <div class="bar-menu-separator"></div>
+            <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" style="height:24px" src="./src/img/log-off.png"><div class="bar-menu-text">Log Off...</div></div>
+            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" style="height:24px" src="./src/img/shut-down.png"><div class="bar-menu-text">Shut Down...</div></div>
         </div>
     </div>
 </body>
