@@ -4,6 +4,7 @@
     <!--<script src="https://raw.githubusercontent.com/a-weeb-programmer/libcute/main/src/libcute.h"></script> lol-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script rel="preconnect" src="./src/jssh.js" crossorigin></script>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
     <style>
         @font-face {
@@ -217,47 +218,77 @@
             outline-offset: -2px;
             cursor: pointer;
 
-            
+
         }
+
         #bar-menu-root {
             padding-top: 2px;
-            height:280px;
-            width:180px;
+            height: 280px;
+            width: 180px;
             background-color: #c7c7c7;
             position: absolute;
-            border-style:outset;
-            bottom:30px;
+            border-style: outset;
+            bottom: 30px;
             display: none;
         }
-        .bar-menu-item{
-            padding-left:5px;
+
+        .bar-menu-item {
+            padding-left: 5px;
             width: 100%;
-            height:25px;
-            display:flex;
+            height: 25px;
+            display: flex;
             font-size: 14px;
             font-weight: bold;
             padding-top: 1px;
+            user-select: none;
         }
-        .bar-menu-image{
+
+        .bar-menu-image {
             height: 18px;
-            padding-left:5px;
-            padding-right:5px;
+            padding-left: 5px;
+            padding-right: 5px;
         }
-        .bar-menu-text{
+
+        .bar-menu-text {
             position: absolute;
-            left:30px;
-            padding-top:2px;
+            left: 35px;
+            padding-top: 2px;
         }
-        .bar-menu-separator{
-            width:calc(100% - 20px);
+
+        .bar-menu-separator {
+            width: calc(100% - 20px);
             height: 3px;
             margin-bottom: 5px;
             background-color: #a1a1a1;
-            border-style:none none solid none;
-            border-color:#dddddd;
-            border-width:2px;
-            left:10px;
+            border-style: none none solid none;
+            border-color: #dddddd;
+            border-width: 2px;
+            left: 10px;
             position: relative;
+        }
+
+        .bar-menu-more {
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-left: 7px solid #000000;
+            border-bottom: 5px solid transparent;
+            position: absolute;
+            right: 5px;
+            margin-top: 6px;
+
+        }
+
+        .bar-menu-more-root {
+            display: none;
+            width: 120px;
+            height: fit-content;
+            border-style: outset outset outset none;
+            right: -123px;
+            position: absolute;
+            padding-top: 3px;
+            background-color: #c7c7c7;
+
         }
     </style>
     <script>
@@ -325,10 +356,10 @@
                             })
                             let px = 0;
                             document.onmousemove = ((evm) => {
-                                if((elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft + (elemy.clientWidth/2)))>0){
-                                    if((elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft - (elemy.clientWidth/2)))<elemy.parentElement.clientWidth -5){
-                                    elemy.style.left =(elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft + (elemy.clientWidth /2)))
-                                    }else {
+                                if ((elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft + (elemy.clientWidth / 2))) > 0) {
+                                    if ((elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft - (elemy.clientWidth / 2))) < elemy.parentElement.clientWidth - 5) {
+                                        elemy.style.left = (elemy.parentElement.clientWidth * (evm.clientX / elemy.parentElement.clientWidth) - (elemy.parentElement.offsetLeft + document.getElementById("root").offsetLeft + (elemy.clientWidth / 2)))
+                                    } else {
                                         elemy.style.left = elemy.parentElement.clientWidth - elemy.clientWidth - 5
                                     }
                                 } else {
@@ -342,12 +373,14 @@
                 }
             }
         }
-        function window_create(uid, name, content) {
+        function window_create(uid, name, content, options = {}) {
             let lines = content.split("</br>").length
             let a = ''
             let minx = 150;
             let miny = 150;
-            a += "<div id='" + uid + "-root' class='window' style=\"width:" + Math.max(document.body.clientWidth * .56, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
+            let size = (options.size != undefined) ? ("width:" + options.size.width + "px;height:" + options.size.height + "px;") : ("width:" + Math.max(document.body.clientWidth * .56, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;");
+
+            a += "<div id='" + uid + "-root' class='window' style=\"" + size + "top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
             //console.log(document.getElementById(uid).attributes["window-name"].value)
             a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>" + name + "</div>"
             a += "<div id='" + uid + "-close' class='close-button' window-name='" + name + "'>" + `<svg draggable="false" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-3px;top:0px;" xmlns:xlink="http://www.w3.org/1999/xlink" width="23px" height="20px" viewBox="0 0 23 20" version="1.1">
@@ -360,8 +393,9 @@
             a += "<div id='" + uid + "-resize-e' class='resize-e'></div>"
             a += "<div id='" + uid + "-resize-w' class='resize-w'></div>"
             a += "<div style='height:25px;'></div>"
-            a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 26px);width:100%'><div id='" + uid + "-content-content' class='content-content'>" + content
-            a += "</div><div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
+            a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 26px);width:100%'>"
+            a += "<div id='" + uid + "-content-content' class='content-content'>" + content + "</div>"
+            a += "<div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
             a += "</div>"
             a += "</div>"
 
@@ -622,25 +656,88 @@
 
 
         }
-        function main(){
-            document.getElementById("bar-menu").onclick = ((ev)=>{
-                if(document.getElementById("bar-menu-root").style.display=="block")
-                document.getElementById("bar-menu-root").style.display = "none"
+        let fs = [{ name: "apps", perms: { r: true }, dir: true, content: [{ name: "notepad", icon: "./src/img/notepad.png", perms: { r: true }, dir: false, content: "window Notepad <input>uwu" }, { name: "cmd", icon: "./src/img/cmd.png", perms: { r: true }, dir: false, content: "window" }] }]
+        function shortcut(i) {
+            let parsed = i.split("\n")
+            for (let line of parsed) {
+                let words = line.split(" ")
+                if (words[0] == "window") {
+                    let t = line.split(" ")
+                    t.splice(0, 2)
+                    window_create(0, words[1], t.join(" "), { size: { width: 500, height: 500 } })
+                    load_bar()
+                }
+            }
+        }
+        function close_menu() {
+            let items = document.getElementsByClassName("bar-menu-item")
+            for (let item = 0; item != items.length; item++) {
+                let i_c = items.item(item).children
+                for (let i = 0; i != i_c.length; i++) {
+                    let id = i_c.item(i)
+                    if (id.className == "bar-menu-more-root") {
+                        id.style.display = "none"
+                    }
+                }
+            }
+            document.getElementById("bar-menu-root").style.display = "none"
+            main()
+        }
+        function main() {
+            document.getElementById("bar-menu").onclick = ((ev) => {
+                if (document.getElementById("bar-menu-root").style.display == "block")
+                    document.getElementById("bar-menu-root").style.display = "none"
                 else
-                document.getElementById("bar-menu-root").style.display = "block"
+                    document.getElementById("bar-menu-root").style.display = "block"
             })
+            let items = document.getElementsByClassName("bar-menu-item")
+            for (let item = 0; item != items.length; item++) {
+                let i_c = items.item(item).children
+                for (let i = 0; i != i_c.length; i++) {
+                    let id = i_c.item(i)
+                    if (id.className == "bar-menu-more-root") {
+                        let dd = (jssh.set_wd(items.item(item).getAttribute("dir")))
+                        /*
+                        <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
+                            src="./src/img/notepad.png">
+                        <div class="bar-menu-text">Notepad--</div>
+                    </div>
+                        */
+                        id.innerHTML = ''
+                        let ins = ""
+                        for (let ite = 0; ite != dd.length; ite++) {
+
+                            ins += `<div class="bar-menu-item" onclick="shortcut('${dd[ite].content}');close_menu();" id="bar-menu-${dd[ite].name}">`
+                            if (dd[ite].icon)
+                                ins += `<img class="bar-menu-image" src="${dd[ite].icon}">`
+                            ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
+
+
+                            //console.log(id.children.item(ite))
+                        }
+                        id.innerHTML = ins;
+                        items.item(item).onmouseover = ((ev) => {
+                            id.style.display = "block"
+                            items.item(item).onmouseout = ((ev) => {
+                                id.style.display = "none"
+                            })
+                        })
+                        break;
+                    }
+                }
+            }
         }
 
     </script>
 </head>
 
-<body
-    onload="window_create(1,'hewwo','hi</br></br></br></br></br></br></br></br></br></br></br></br>hi');window_create(2,'uwu','uwu');load_bar();main()">
+<body onload="main()">
     <div id="root">
         <div id="bar">
             <div id="bar-children">
-                <div id="bar-menu" ><img src="./src/img/windows.png"><pre> </pre>Start
-                    
+                <div id="bar-menu"><img src="./src/img/windows.png">
+                    <pre> </pre>Start
+
                 </div>
                 <div id="bar-items">
                 </div>
@@ -649,18 +746,62 @@
             </div>
         </div>
         <div id="bar-menu-root">
-            <div class="bar-menu-item" id="bar-menu-windows-update"><img class="bar-menu-image" src="./src/img/update.png"><div class="bar-menu-text">Windows Update</div></div>
+            <div class="bar-menu-item" id="bar-menu-windows-update"><img class="bar-menu-image"
+                    src="./src/img/update.png">
+                <div class="bar-menu-text">Windows Update</div>
+
+            </div>
             <div class="bar-menu-separator"></div>
-            <div class="bar-menu-item" id="bar-menu-programs"><img class="bar-menu-image" src="./src/img/programs.png"><div class="bar-menu-text">Programs</div></div>
-            <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image" src="./src/img/favorites.png"><div class="bar-menu-text">Favorites</div></div>
-            <div class="bar-menu-item" id="bar-menu-docs"><img class="bar-menu-image" src="./src/img/docs.png"><div class="bar-menu-text">Documents</div></div>
-            <div class="bar-menu-item" id="bar-menu-settings"><img class="bar-menu-image" style="height:25px" src="./src/img/settings.png"><div class="bar-menu-text">Settings</div></div>
-            <div class="bar-menu-item" id="bar-menu-find"><img class="bar-menu-image" style="height:25px" src="./src/img/find.png"><div class="bar-menu-text">Find</div></div>
-            <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" src="./src/img/help.png"><div class="bar-menu-text">Help</div></div>
-            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" src="./src/img/run.png"><div class="bar-menu-text">Run</div></div>
+            <div class="bar-menu-item" id="bar-menu-programs" dir="/apps/"><img class="bar-menu-image"
+                    src="./src/img/programs.png">
+                <div class="bar-menu-text">Programs</div>
+                <div class="bar-menu-more"></div>
+                <div class="bar-menu-more-root">
+                    <!--
+                    <div class="bar-menu-item" id="bar-menu-favorites" shortcut-path=""><img class="bar-menu-image"
+                            src="./src/img/notepad.png">
+                        <div class="bar-menu-text">Notepad</div>
+                    </div>
+                    <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
+                            src="./src/img/notepad.png">
+                        <div class="bar-menu-text">Notepad--</div>
+                    </div>-->
+                </div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
+                    src="./src/img/favorites.png">
+                <div class="bar-menu-text">Favorites</div>
+                <div class="bar-menu-more"></div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-docs"><img class="bar-menu-image" src="./src/img/docs.png">
+                <div class="bar-menu-text">Documents</div>
+                <div class="bar-menu-more"></div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-settings"><img class="bar-menu-image"
+                    style="height:27px;padding-left:2px" src="./src/img/settings.png">
+                <div class="bar-menu-text">Settings</div>
+                <div class="bar-menu-more"></div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-find"><img class="bar-menu-image"
+                    style="height:27px;padding-left:2px" src="./src/img/find.png">
+                <div class="bar-menu-text">Find</div>
+                <div class="bar-menu-more"></div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" src="./src/img/help.png">
+                <div class="bar-menu-text">Help</div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" src="./src/img/run.png">
+                <div class="bar-menu-text">Run</div>
+            </div>
             <div class="bar-menu-separator"></div>
-            <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" style="height:24px" src="./src/img/log-off.png"><div class="bar-menu-text">Log Off...</div></div>
-            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" style="height:24px" src="./src/img/shut-down.png"><div class="bar-menu-text">Shut Down...</div></div>
+            <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" style="height:24px"
+                    src="./src/img/log-off.png">
+                <div class="bar-menu-text">Log Off...</div>
+            </div>
+            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" style="height:24px"
+                    src="./src/img/shut-down.png">
+                <div class="bar-menu-text">Shut Down...</div>
+            </div>
         </div>
     </div>
 </body>
