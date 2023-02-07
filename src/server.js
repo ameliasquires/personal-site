@@ -4,12 +4,12 @@ const app = express();
 const port = 8008;
 
 app.get("/tty", (req, res) => {
-  res.sendFile(__dirname + "/html/tty.html");
+  res.sendFile("html/tty.html",{'root': './'});
 });
 app.get("/display", (req, res) => {
-  res.sendFile(__dirname + "/html/display.html");
+  res.sendFile("html/display.html",{'root': './'});
 });
-app.use("/src", express.static("src"));
+app.use("/src", express.static("src",{'root': './'}));
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });

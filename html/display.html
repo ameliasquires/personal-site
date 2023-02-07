@@ -52,6 +52,15 @@
         #root {
             position: relative;
             background-color: cornsilk;
+            background-image: url("src/img/wallpaper.png");
+            background-repeat: no-repeat;
+            background-origin: content-box;
+            background-attachment: fixed;
+            background-position: center top;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
             width: 90%;
             height: 90%;
             margin-left: 5%;
@@ -291,15 +300,16 @@
             background-color: #c7c7c7;
 
         }
-        textarea{
-            resize:none;
-            background-color: rgba(0,0,0,0);
-            border:none;
+
+        textarea {
+            resize: none;
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
             outline: none;
-            overflow:scroll;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+            overflow: scroll;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
         }
     </style>
     <script>
@@ -385,11 +395,11 @@
             }
         }
         let minx = 150;
-            let miny = 150;
+        let miny = 150;
         function window_create(uid, name, content, options = {}) {
             let lines = content.split("</br>").length
             let a = ''
-            
+
             let size = (options.size != undefined) ? ("width:" + options.size.width + "px;height:" + options.size.height + "px;") : ("width:" + Math.max(document.body.clientWidth * .56, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;");
 
             a += "<div id='" + uid + "-root' class='window' style=\"" + size + "top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
@@ -417,19 +427,19 @@
             a += "<div id='" + uid + "-resize-es' class='resize-es'></div>"
             document.getElementById("root").innerHTML += a
             //console.log(document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight))
-            
+
             //console.log(document.getElementById(uid + "-content-scrollbar-point"))
             refresh_windows()
         }
-            function refresh_windows(){
+        function refresh_windows() {
             let elems = document.getElementsByClassName("window")
             for (let i = 0; i != elems.length; i++) {
                 let uid = elems.item(i).id.split("-")[0]
                 document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
-            if (document.getElementById(uid + "-content-scrollbar-point").clientHeight > document.getElementById(uid + "-content-root").clientHeight)
-                document.getElementById(uid + "-content-scrollbar").style.display = 'none'
-            else
-                document.getElementById(uid + "-content-scrollbar").style.display = 'block'
+                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight > document.getElementById(uid + "-content-root").clientHeight)
+                    document.getElementById(uid + "-content-scrollbar").style.display = 'none'
+                else
+                    document.getElementById(uid + "-content-scrollbar").style.display = 'block'
                 //let elem = elems.item(i).children[0]
                 let elec = elems.item(i).children
                 let elem
@@ -672,12 +682,12 @@
 
             }
 
-            
+
 
         }
-        function auto_resize(i){
-            
-            i.style.height = i.value.split("\n").length * 30
+        function auto_resize(i) {
+
+            i.style.height = (i.value.split("\n").length + 1) * 25
             refresh_windows()
         }
         let fs = [{ name: "apps", perms: { r: true }, dir: true, content: [{ name: "notepad", icon: "./src/img/notepad.png", perms: { r: true }, dir: false, content: "window Notepad <textarea onkeypress=\\'auto_resize(this)\\' style=\\'width:100%;overflow:visible;display:block;\\'>uwu</textarea>" }, { name: "cmd", icon: "./src/img/cmd.png", perms: { r: true }, dir: false, content: "window" }] }]
@@ -688,7 +698,7 @@
                 if (words[0] == "window") {
                     let t = line.split(" ")
                     t.splice(0, 2)
-                    window_create(0, words[1], t.join(" "), { size: { width: 500, height: 500 } })
+                    window_create(document.getElementsByClassName("window").length, words[1], t.join(" "), { size: { width: 500, height: 500 } })
                     load_bar()
                 }
             }
@@ -720,7 +730,8 @@
                 for (let i = 0; i != i_c.length; i++) {
                     let id = i_c.item(i)
                     if (id.className == "bar-menu-more-root") {
-                        let dd = (jssh.set_wd(items.item(item).getAttribute("dir")))
+                        let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length)
+                        let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
                         /*
                         <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
                             src="./src/img/notepad.png">

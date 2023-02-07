@@ -63,16 +63,20 @@
             , { name: ".secret", perms: { r: true }, dir: true, content: [{ name: "readme", perms: { r: true }, dir: false, content: "still working on things:) nothing here is final\n or even close" }] }
 
         ]
+        let aaa = new jssh(fs, working_dir, 0)
+        function main() {
+            aaa.main()
+        }
 
     </script>
 </head>
 
-<body onload="jssh.main()">
+<body onload="main()">
 
     <div id="history">
 
     </div>
-    <form autocomplete="off" onsubmit="jssh.ex();return false;">
+    <form autocomplete="off" onsubmit="aaa.ex();return false;">
         λ <input id="line" style="width:95%;" onblur="this.focus()" autofocus>
         <input type="submit" style="display: none" />
     </form>

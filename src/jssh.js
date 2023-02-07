@@ -1,4 +1,9 @@
-let jssh = {
+class jssh {
+  constructor(fs, working_dir, uid) {
+    this.fs = fs;
+    this.working_dir = working_dir;
+    this.uid = uid;
+  }
   set_wd(dir) {
     //let lwd = fs
     let wd = fs;
@@ -34,7 +39,7 @@ let jssh = {
     }
     return wd;
     //return 1;
-  },
+  }
   clean_path(path) {
     path = path
       .split("/")
@@ -50,13 +55,13 @@ let jssh = {
       }
     }
     return "/" + path.join("/");
-  },
+  }
   main() {
     for (let d of fs) {
       if (d.name == ".bashrc") {
         for (let line of d.content.split("\n")) {
           document.getElementById("line").value = line;
-          jssh.ex();
+          this.ex();
         }
         break;
       }
@@ -64,16 +69,16 @@ let jssh = {
     setInterval(() => {
       document.getElementById("line").focus();
     }, 10);
-  },
+  }
   ex() {
-    let temp_working_dir = working_dir;
+    let temp_working_dir = this.working_dir;
     document.getElementById("history").innerHTML +=
       "λ " + document.getElementById("line").value + "</br>";
     let com = document.getElementById("line").value;
     let stripped = com.split(" ");
     switch (stripped[0]) {
       case "jssh":
-        jssh.main();
+        this.main();
         break;
       case "neofetch":
         let add = "";
@@ -92,7 +97,7 @@ let jssh = {
 `--'   `--' </pre>"; //position this plz:)
         add +=
           "</td><td style='padding:5px;'>hello, i am grant, they/them</br>i am mostly a typescript and c++ dev, but</br>i can work in most languages</br>--</br>i enjoy manga, and coding in free time</br>contact me at grantsquires@disroot.org</br></br>";
-        colors = ["#cdb4db", "#ffc8dd", "#ffafcc", "#bde0fe", "#a2d2ff"];
+        let colors = ["#cdb4db", "#ffc8dd", "#ffafcc", "#bde0fe", "#a2d2ff"];
         for (let co of colors) {
           add +=
             "<pre style='margin-bottom:-2px;display:inline-block;height:25px;width:30px;background-color:" +
@@ -132,7 +137,7 @@ let jssh = {
         }
         let tt = temp_working_dir.split("/");
         tt.splice(tt.length - 1, 1);
-        let wa = jssh.set_wd(jssh.clean_path(tt.join("/")));
+        let wa = this.set_wd(this.clean_path(tt.join("/")));
         for (let a of wa) {
           if (
             a.name ==
@@ -148,12 +153,12 @@ let jssh = {
         }
         document.getElementById("history").innerHTML +=
           "jssh: " +
-          jssh.clean_path(temp_working_dir) +
+          this.clean_path(temp_working_dir) +
           " file or dir not found</br>";
         break;
       case "pwd":
         document.getElementById("history").innerHTML +=
-          jssh.clean_path(temp_working_dir) + "</br>";
+          this.clean_path(temp_working_dir) + "</br>";
         break;
       case "cd":
         if (temp_working_dir != "/") temp_working_dir += "/";
@@ -164,13 +169,13 @@ let jssh = {
             break;
           }
         }
-        let ww = jssh.set_wd(temp_working_dir);
+        let ww = this.set_wd(temp_working_dir);
         if (ww == 1) {
           document.getElementById("history").innerHTML +=
             "jssh: `" + temp_working_dir + "` directory not found</br>";
           return;
         }
-        working_dir = jssh.clean_path(temp_working_dir);
+        this.working_dir = this.clean_path(temp_working_dir);
 
         break;
       case "ls":
@@ -182,7 +187,7 @@ let jssh = {
             break;
           }
         }
-        let wd = jssh.set_wd(jssh.clean_path(temp_working_dir));
+        let wd = this.set_wd(this.clean_path(temp_working_dir));
         if (wd == 1) {
           document.getElementById("history").innerHTML +=
             "jssh: `" + temp_working_dir + "` directory not found</br>";
@@ -219,5 +224,5 @@ let jssh = {
     }
 
     document.getElementById("line").value = "";
-  },
-};
+  }
+}
