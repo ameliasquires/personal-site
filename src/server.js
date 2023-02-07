@@ -11,5 +11,5 @@ app.get("/display", (req, res) => {
 });
 app.use("/src", express.static("src"));
 app.listen(port, () => {
-  console.log(`${port}`);
+  console.log(`http://localhost:${port}`);
 });
