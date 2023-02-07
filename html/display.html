@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script rel="preconnect" src="./src/jssh.js" crossorigin></script>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: f98;
@@ -15,7 +16,7 @@
         * {
             margin: 0;
             font-family: f98;
-
+            font-size: 15px;
             scrollbar-width: none;
         }
 
@@ -52,11 +53,11 @@
         #root {
             position: relative;
             background-color: cornsilk;
-            background-image: url("src/img/wallpaper.png");
+            background-image: url("src/img/wallpaper.jpg");
             background-repeat: no-repeat;
             background-origin: content-box;
             background-attachment: fixed;
-            background-position: center top;
+            background-position: center center;
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
@@ -311,6 +312,25 @@
             -moz-box-shadow: none;
             box-shadow: none;
         }
+
+        input {
+            background-color: rgba(0, 0, 0, 0);
+            text-shadow: 0 0 10px white;
+            border: none;
+        }
+
+        input {
+            border: 0;
+            outline: 0;
+        }
+
+        input:focus {
+            outline: none !important;
+        }
+
+        input:hover {
+            cursor: text;
+        }
     </style>
     <script>
         function compare(a, b) {
@@ -436,7 +456,7 @@
             for (let i = 0; i != elems.length; i++) {
                 let uid = elems.item(i).id.split("-")[0]
                 document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
-                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight > document.getElementById(uid + "-content-root").clientHeight)
+                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight)
                     document.getElementById(uid + "-content-scrollbar").style.display = 'none'
                 else
                     document.getElementById(uid + "-content-scrollbar").style.display = 'block'
@@ -690,7 +710,32 @@
             i.style.height = (i.value.split("\n").length + 1) * 25
             refresh_windows()
         }
-        let fs = [{ name: "apps", perms: { r: true }, dir: true, content: [{ name: "notepad", icon: "./src/img/notepad.png", perms: { r: true }, dir: false, content: "window Notepad <textarea onkeypress=\\'auto_resize(this)\\' style=\\'width:100%;overflow:visible;display:block;\\'>uwu</textarea>" }, { name: "cmd", icon: "./src/img/cmd.png", perms: { r: true }, dir: false, content: "window" }] }]
+        let procs = {}
+        function exe_com(a) {
+            let exe;
+            let id = a.parentElement.id.split("-")[0]
+
+            let a_c = a.children;
+            for (let i = 0; i != a_c.length; i++) {
+                if (a_c.item(i).id == id + "-line") {
+                    let inp = a_c.item(i).id
+                    let a_p_c = a.parentElement.children
+                    for (let ii = 0; ii != a_p_c.length; ii++) {
+                        if (a_p_c.item(ii).id == id + "-history") {
+                            let his = a_p_c.item(ii).id
+                            if (procs[id] == undefined)
+                                procs[id] = new jssh(fs, "/", id, inp, his)
+                            procs[id].ex()
+                            refresh_windows()
+                            a.parentElement.parentElement.scrollTop = a.parentElement.parentElement.scrollHeight
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+        }
+        let fs = [{ name: "apps", perms: { r: true }, dir: true, content: [{ name: "notepad", icon: "./src/img/notepad.png", perms: { r: true }, dir: false, content: "window Notepad <textarea onkeypress=\\'auto_resize(this)\\' style=\\'width:100%;overflow:visible;display:block;\\'></textarea>" }, { name: "cmd", icon: "./src/img/cmd.png", perms: { r: true }, dir: false, content: "window cmd <div class=\\'history\\' id=\\'#_ID-history\\'></div><form autocomplete=\\'off\\' onsubmit=\\'exe_com(this);return false;\\'>λ <input id=\\'#_ID-line\\' class=\\'line\\' style=\\'width:95%;\\' autofocus><input type=\\'submit\\' style=\\'display: none\\' /></form>" }] }]
         function shortcut(i) {
             let parsed = i.split("\n")
             for (let line of parsed) {
@@ -698,7 +743,7 @@
                 if (words[0] == "window") {
                     let t = line.split(" ")
                     t.splice(0, 2)
-                    window_create(document.getElementsByClassName("window").length, words[1], t.join(" "), { size: { width: 500, height: 500 } })
+                    window_create(document.getElementsByClassName("window").length, words[1], t.join(" ").replace(/#_ID/g, document.getElementsByClassName("window").length), { size: { width: 500, height: 500 } })
                     load_bar()
                 }
             }
@@ -730,7 +775,7 @@
                 for (let i = 0; i != i_c.length; i++) {
                     let id = i_c.item(i)
                     if (id.className == "bar-menu-more-root") {
-                        let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length)
+                        let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
                         let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
                         /*
                         <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"

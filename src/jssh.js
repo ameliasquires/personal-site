@@ -1,7 +1,9 @@
 class jssh {
-  constructor(fs, working_dir, uid) {
+  constructor(fs, working_dir, uid, input, h) {
     this.fs = fs;
     this.working_dir = working_dir;
+    this.input = input;
+    this.history = h;
     this.uid = uid;
   }
   set_wd(dir) {
@@ -54,27 +56,28 @@ class jssh {
         path.splice(i - 1, 2);
       }
     }
+    if (path.includes("..")) path = [];
     return "/" + path.join("/");
   }
   main() {
     for (let d of fs) {
       if (d.name == ".bashrc") {
         for (let line of d.content.split("\n")) {
-          document.getElementById("line").value = line;
+          document.getElementById(this.input).value = line;
           this.ex();
         }
         break;
       }
     }
     setInterval(() => {
-      document.getElementById("line").focus();
+      document.getElementById(this.input).focus();
     }, 10);
   }
   ex() {
     let temp_working_dir = this.working_dir;
-    document.getElementById("history").innerHTML +=
-      "λ " + document.getElementById("line").value + "</br>";
-    let com = document.getElementById("line").value;
+    document.getElementById(this.history).innerHTML +=
+      "λ " + document.getElementById(this.input).value + "</br>";
+    let com = document.getElementById(this.input).value;
     let stripped = com.split(" ");
     switch (stripped[0]) {
       case "jssh":
@@ -114,16 +117,17 @@ class jssh {
         }
 
         add += "</td></tr></table></br></br>";
-        document.getElementById("history").innerHTML += add;
+        document.getElementById(this.history).innerHTML += add;
         break;
       case "clear":
-        document.getElementById("history").innerHTML = "";
+        document.getElementById(this.history).innerHTML = "";
         break;
       case "echo":
-        document.getElementById("history").innerHTML += com.substr(4) + "</br>";
+        document.getElementById(this.history).innerHTML +=
+          com.substr(4) + "</br>";
         break;
       case "help":
-        document.getElementById("history").innerHTML +=
+        document.getElementById(this.history).innerHTML +=
           "jssh -- version 1.0.0 (dev)</br></br>commands: neofetch, help,</br> cat [path],pwd,</br>ls [path] [-a], cd [path],</br>clear, echo [str],jssh</br>";
         break;
       case "cat":
@@ -146,18 +150,19 @@ class jssh {
               ] &&
             !a.dir
           ) {
-            document.getElementById("history").innerHTML += a.content + "</br>";
-            document.getElementById("line").value = "";
+            document.getElementById(this.history).innerHTML +=
+              a.content + "</br>";
+            document.getElementById(this.input).value = "";
             return;
           }
         }
-        document.getElementById("history").innerHTML +=
+        document.getElementById(this.history).innerHTML +=
           "jssh: " +
           this.clean_path(temp_working_dir) +
           " file or dir not found</br>";
         break;
       case "pwd":
-        document.getElementById("history").innerHTML +=
+        document.getElementById(this.history).innerHTML +=
           this.clean_path(temp_working_dir) + "</br>";
         break;
       case "cd":
@@ -171,7 +176,7 @@ class jssh {
         }
         let ww = this.set_wd(temp_working_dir);
         if (ww == 1) {
-          document.getElementById("history").innerHTML +=
+          document.getElementById(this.history).innerHTML +=
             "jssh: `" + temp_working_dir + "` directory not found</br>";
           return;
         }
@@ -189,14 +194,14 @@ class jssh {
         }
         let wd = this.set_wd(this.clean_path(temp_working_dir));
         if (wd == 1) {
-          document.getElementById("history").innerHTML +=
+          document.getElementById(this.history).innerHTML +=
             "jssh: `" + temp_working_dir + "` directory not found</br>";
           return;
         }
         if (stripped.includes("-a")) {
-          document.getElementById("history").innerHTML +=
+          document.getElementById(this.history).innerHTML +=
             "<font style='opacity:.3'>[</font>.<font style='opacity:.3'>]</font></br>";
-          document.getElementById("history").innerHTML +=
+          document.getElementById(this.history).innerHTML +=
             "<font style='opacity:.3'>[</font>..<font style='opacity:.3'>]</font></br>";
         }
 
@@ -206,23 +211,24 @@ class jssh {
             i.name[0] != "."
           ) {
             if (i.dir)
-              document.getElementById("history").innerHTML +=
+              document.getElementById(this.history).innerHTML +=
                 "<font style='opacity:.3'>[</font>" +
                 i.name +
                 "<font style='opacity:.3'>]</font></br>";
             else
-              document.getElementById("history").innerHTML += i.name + "</br>";
+              document.getElementById(this.history).innerHTML +=
+                i.name + "</br>";
           }
         }
         break;
       default:
-        document.getElementById("history").innerHTML +=
+        document.getElementById(this.history).innerHTML +=
           "jssh: " +
           stripped[0] +
           ": command not found or not implemented</br>";
         break;
     }
 
-    document.getElementById("line").value = "";
+    document.getElementById(this.input).value = "";
   }
 }

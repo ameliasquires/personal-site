@@ -63,7 +63,7 @@
             , { name: ".secret", perms: { r: true }, dir: true, content: [{ name: "readme", perms: { r: true }, dir: false, content: "still working on things:) nothing here is final\n or even close" }] }
 
         ]
-        let aaa = new jssh(fs, working_dir, 0)
+        let aaa = new jssh(fs, working_dir, 0, "line", "history")
         function main() {
             aaa.main()
         }
