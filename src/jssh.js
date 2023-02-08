@@ -51,9 +51,10 @@ class jssh {
       .filter(function (e) {
         return e.replace(" ", "") !== ".";
       });
-    for (let i = path.length; i != 0; i--) {
+    for (let i = 0; i != path.length; i++) {
       if (path[i] == "..") {
         path.splice(i - 1, 2);
+        return this.clean_path("/" + path.join("/"));
       }
     }
     if (path.includes("..")) path = [];
@@ -62,24 +63,149 @@ class jssh {
   main() {
     for (let d of fs) {
       if (d.name == ".bashrc") {
-        for (let line of d.content.split("\n")) {
-          document.getElementById(this.input).value = line;
-          this.ex();
+        for (let line of d.content.split("\n").join("</br>").split("</br>")) {
+          if (line.trim() != "") {
+            document.getElementById(this.input).value = line.trim();
+            this.ex();
+          }
         }
         break;
       }
     }
-    setInterval(() => {
-      document.getElementById(this.input).focus();
-    }, 10);
+    //setInterval(() => {
+    //  document.getElementById(this.input).focus();
+    //}, 10);
+  }
+  add_file(fs, path, dir) {
+    //console.log(fs, path);
+    if (path.length == 1)
+      return fs.push({
+        name: path[0],
+        perms: { r: true },
+        dir: dir,
+        content: dir ? [] : "",
+      });
+
+    for (let f in fs) {
+      if (fs[f].name == path[0] && fs[f].dir) {
+        fs = fs[f].content;
+        path.splice(0, 1);
+        return this.add_file(fs, path, dir);
+      }
+    }
+    document.getElementById(this.history).innerHTML +=
+      "jssh: " + path.join("/") + ": directory not found</br>";
+  }
+  write_file(fs, path, content, append) {
+    if (path.length == 1) {
+      for (let f in fs) {
+        if (fs[f].name == path[0] && !fs[f].dir) {
+          fs[f].content = append ? fs[f].content + content : content;
+          return fs;
+        }
+      }
+    }
+    /*
+      return fs.push({
+        name: path[0],
+        perms: { r: true },
+        dir: dir,
+        content: dir ? [] : "",
+      });*/
+
+    for (let f in fs) {
+      if (fs[f].name == path[0] && fs[f].dir) {
+        fs = fs[f].content;
+        path.splice(0, 1);
+        return this.write_file(fs, path, content, append);
+      }
+    }
+    document.getElementById(this.history).innerHTML +=
+      "jssh: " + path.join("/") + ": file not found</br>";
+  }
+  rem_file(fs, path) {
+    //console.log(fs, path);
+    if (path.length == 1) {
+      for (let f in fs) {
+        console.log(f);
+        if (fs[f].name == path[0]) {
+          fs.splice(f, 1);
+          break;
+        }
+      }
+      return fs;
+    }
+
+    for (let f in fs) {
+      if (fs[f].name == path[0] && fs[f].dir) {
+        fs = fs[f].content;
+        path.splice(0, 1);
+        return this.rem_file(fs, path);
+      }
+    }
+    document.getElementById(this.history).innerHTML +=
+      "jssh: " + path.join("/") + ": file or directory not found</br>";
   }
   ex() {
     let temp_working_dir = this.working_dir;
-    document.getElementById(this.history).innerHTML +=
-      "λ " + document.getElementById(this.input).value + "</br>";
+    //document.getElementById(this.history).innerHTML +=
+    //  "λ " + document.getElementById(this.input).value + "</br>";
     let com = document.getElementById(this.input).value;
     let stripped = com.split(" ");
+    let redir = false,
+      redir_app = false;
+
+    let history_write = "";
+    document.getElementById(this.history).innerHTML +=
+      "λ " + document.getElementById(this.input).value + "</br>";
+    if (stripped.includes(">")) redir = true;
+    else if (stripped.includes(">>")) redir_app = true;
     switch (stripped[0]) {
+      case "touch":
+        this.add_file(
+          this.fs,
+          this.clean_path(
+            stripped[1][0] == "/"
+              ? stripped[1]
+              : this.working_dir + "/" + stripped[1]
+          )
+            .split("/")
+            .filter(function (e) {
+              return e !== "";
+            }),
+          false
+        );
+
+        break;
+      case "rm":
+        this.rem_file(
+          this.fs,
+          this.clean_path(
+            stripped[1][0] == "/"
+              ? stripped[1]
+              : this.working_dir + "/" + stripped[1]
+          )
+            .split("/")
+            .filter(function (e) {
+              return e !== "";
+            })
+        );
+        break;
+      case "mkdir":
+        this.add_file(
+          this.fs,
+          this.clean_path(
+            stripped[1][0] == "/"
+              ? stripped[1]
+              : this.working_dir + "/" + stripped[1]
+          )
+            .split("/")
+            .filter(function (e) {
+              return e !== "";
+            }),
+          true
+        );
+        break;
       case "jssh":
         this.main();
         break;
@@ -117,17 +243,16 @@ class jssh {
         }
 
         add += "</td></tr></table></br></br>";
-        document.getElementById(this.history).innerHTML += add;
+        history_write += add;
         break;
       case "clear":
         document.getElementById(this.history).innerHTML = "";
         break;
       case "echo":
-        document.getElementById(this.history).innerHTML +=
-          com.substr(4) + "</br>";
+        history_write += com.substr(4).split(redir ? ">" : ">>")[0] + "</br>";
         break;
       case "help":
-        document.getElementById(this.history).innerHTML +=
+        history_write +=
           "jssh -- version 1.0.0 (dev)</br></br>commands: neofetch, help,</br> cat [path],pwd,</br>ls [path] [-a], cd [path],</br>clear, echo [str],jssh</br>";
         break;
       case "cat":
@@ -150,20 +275,20 @@ class jssh {
               ] &&
             !a.dir
           ) {
-            document.getElementById(this.history).innerHTML +=
-              a.content + "</br>";
+            history_write += a.content + "</br>";
             document.getElementById(this.input).value = "";
-            return;
+            break;
           }
         }
-        document.getElementById(this.history).innerHTML +=
-          "jssh: " +
-          this.clean_path(temp_working_dir) +
-          " file or dir not found</br>";
+        if (history_write == "") {
+          history_write +=
+            "jssh: " +
+            this.clean_path(temp_working_dir) +
+            " file or dir not found</br>";
+        }
         break;
       case "pwd":
-        document.getElementById(this.history).innerHTML +=
-          this.clean_path(temp_working_dir) + "</br>";
+        history_write += this.clean_path(temp_working_dir) + "</br>";
         break;
       case "cd":
         if (temp_working_dir != "/") temp_working_dir += "/";
@@ -176,9 +301,9 @@ class jssh {
         }
         let ww = this.set_wd(temp_working_dir);
         if (ww == 1) {
-          document.getElementById(this.history).innerHTML +=
+          history_write +=
             "jssh: `" + temp_working_dir + "` directory not found</br>";
-          return;
+          break;
         }
         this.working_dir = this.clean_path(temp_working_dir);
 
@@ -194,14 +319,14 @@ class jssh {
         }
         let wd = this.set_wd(this.clean_path(temp_working_dir));
         if (wd == 1) {
-          document.getElementById(this.history).innerHTML +=
+          history_write +=
             "jssh: `" + temp_working_dir + "` directory not found</br>";
           return;
         }
         if (stripped.includes("-a")) {
-          document.getElementById(this.history).innerHTML +=
+          history_write +=
             "<font style='opacity:.3'>[</font>.<font style='opacity:.3'>]</font></br>";
-          document.getElementById(this.history).innerHTML +=
+          history_write +=
             "<font style='opacity:.3'>[</font>..<font style='opacity:.3'>]</font></br>";
         }
 
@@ -211,24 +336,37 @@ class jssh {
             i.name[0] != "."
           ) {
             if (i.dir)
-              document.getElementById(this.history).innerHTML +=
+              history_write +=
                 "<font style='opacity:.3'>[</font>" +
                 i.name +
                 "<font style='opacity:.3'>]</font></br>";
-            else
-              document.getElementById(this.history).innerHTML +=
-                i.name + "</br>";
+            else history_write += i.name + "</br>";
           }
         }
         break;
       default:
-        document.getElementById(this.history).innerHTML +=
+        history_write +=
           "jssh: " +
           stripped[0] +
           ": command not found or not implemented</br>";
         break;
     }
+    if (redir || redir_app) {
+      let pp = (redir ? com.split(">") : com.split(">>"))
+        .filter(function (e) {
+          return e !== "";
+        })[1]
+        .trim();
+      pp = this.clean_path(pp[0] == "/" ? pp : this.working_dir + "/" + pp);
 
+      pp = pp.split("/").filter(function (e) {
+        return e !== "";
+      });
+
+      this.write_file(this.fs, pp, history_write, redir_app);
+    } else {
+      document.getElementById(this.history).innerHTML += history_write;
+    }
     document.getElementById(this.input).value = "";
   }
 }

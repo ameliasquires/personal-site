@@ -317,6 +317,7 @@
             background-color: rgba(0, 0, 0, 0);
             text-shadow: 0 0 10px white;
             border: none;
+            color: inherit;
         }
 
         input {
@@ -344,6 +345,50 @@
         }
         let bar_items_left = []
         function load_bar() {
+            let items = document.getElementsByClassName("bar-menu-item")
+            for (let item = 0; item != items.length; item++) {
+                let i_c = items.item(item).children
+                let found_more = false
+                for (let i = 0; i != i_c.length; i++) {
+                    let id = i_c.item(i)
+                    if (id.className == "bar-menu-more-root") {
+                        found_more = true
+                        let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
+                        let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
+                        if (dd[0] == undefined) { //item is null
+                            id.innerHTML = '';
+                            id.remove(); break
+                            //! TODO: don't show bar if dir is empty or null
+                        }
+                        /*
+                        <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
+                            src="./src/img/notepad.png">
+                        <div class="bar-menu-text">Notepad--</div>
+                    </div>
+                        */
+                        id.innerHTML = ''
+                        let ins = ""
+                        for (let ite = 0; ite != dd.length; ite++) {
+
+                            ins += `<div class="bar-menu-item" onclick="shortcut('${dd[ite].content}');close_menu();" id="bar-menu-${dd[ite].name}">`
+                            if (dd[ite].icon)
+                                ins += `<img class="bar-menu-image" src="${dd[ite].icon}">`
+                            ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
+
+
+                            //console.log(id.children.item(ite))
+                        }
+                        id.innerHTML = ins;
+                        items.item(item).onmouseover = ((ev) => {
+                            id.style.display = "block"
+                            items.item(item).onmouseout = ((ev) => {
+                                id.style.display = "none"
+                            })
+                        })
+                        break;
+                    }
+                }
+            }
             let bar = document.getElementById("bar-items")
             let windows = document.getElementsByClassName("window")
             let put = ""
@@ -419,10 +464,9 @@
         function window_create(uid, name, content, options = {}) {
             let lines = content.split("</br>").length
             let a = ''
-
             let size = (options.size != undefined) ? ("width:" + options.size.width + "px;height:" + options.size.height + "px;") : ("width:" + Math.max(document.body.clientWidth * .56, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;");
-
-            a += "<div id='" + uid + "-root' class='window' style=\"" + size + "top:0px;left:0px;position:absolute;\" window-name='" + name + "'>"
+            let pos = (options.pos != undefined) ? ("left:" + options.pos.left + "px;top:" + options.pos.top + "px;") : ("left:0px;top:0px;");
+            a += "<div id='" + uid + "-root' class='window' style=\"" + size + pos + "position:absolute;\" window-name='" + name + "'>"
             //console.log(document.getElementById(uid).attributes["window-name"].value)
             a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>" + name + "</div>"
             a += "<div id='" + uid + "-close' class='close-button' window-name='" + name + "'>" + `<svg draggable="false" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-3px;top:0px;" xmlns:xlink="http://www.w3.org/1999/xlink" width="23px" height="20px" viewBox="0 0 23 20" version="1.1">
@@ -473,6 +517,8 @@
                                 let ii = elems.item(i)
                                 elem.children.item(iii).onmousedown = ((ev) => {
                                     //console.log(elems.item(i))
+                                    //onkill.apply(this)
+                                    delete procs[elem.id.split("-")[0]]
                                     ii.remove()
                                     load_bar()
                                 })
@@ -743,7 +789,8 @@
                 if (words[0] == "window") {
                     let t = line.split(" ")
                     t.splice(0, 2)
-                    window_create(document.getElementsByClassName("window").length, words[1], t.join(" ").replace(/#_ID/g, document.getElementsByClassName("window").length), { size: { width: 500, height: 500 } })
+                    let id = document.getElementsByClassName("window").length
+                    window_create(id, words[1], t.join(" ").replace(/#_ID/g, id), { size: { width: 500, height: 300 }, pos: { left: 250, top: 50 } })
                     load_bar()
                 }
             }
@@ -769,43 +816,7 @@
                 else
                     document.getElementById("bar-menu-root").style.display = "block"
             })
-            let items = document.getElementsByClassName("bar-menu-item")
-            for (let item = 0; item != items.length; item++) {
-                let i_c = items.item(item).children
-                for (let i = 0; i != i_c.length; i++) {
-                    let id = i_c.item(i)
-                    if (id.className == "bar-menu-more-root") {
-                        let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
-                        let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
-                        /*
-                        <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
-                            src="./src/img/notepad.png">
-                        <div class="bar-menu-text">Notepad--</div>
-                    </div>
-                        */
-                        id.innerHTML = ''
-                        let ins = ""
-                        for (let ite = 0; ite != dd.length; ite++) {
-
-                            ins += `<div class="bar-menu-item" onclick="shortcut('${dd[ite].content}');close_menu();" id="bar-menu-${dd[ite].name}">`
-                            if (dd[ite].icon)
-                                ins += `<img class="bar-menu-image" src="${dd[ite].icon}">`
-                            ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
-
-
-                            //console.log(id.children.item(ite))
-                        }
-                        id.innerHTML = ins;
-                        items.item(item).onmouseover = ((ev) => {
-                            id.style.display = "block"
-                            items.item(item).onmouseout = ((ev) => {
-                                id.style.display = "none"
-                            })
-                        })
-                        break;
-                    }
-                }
-            }
+            load_bar()
         }
 
     </script>
