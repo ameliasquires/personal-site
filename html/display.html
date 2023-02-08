@@ -345,19 +345,21 @@
         }
         let bar_items_left = []
         function load_bar() {
-            let items = document.getElementsByClassName("bar-menu-item")
+            let items = document.getElementById("bar-menu-root").children
             for (let item = 0; item != items.length; item++) {
+                //console.log(items.item(item))
+                if(items.item(item).className=="bar-menu-item"){
                 let i_c = items.item(item).children
-                let found_more = false
                 for (let i = 0; i != i_c.length; i++) {
                     let id = i_c.item(i)
                     if (id.className == "bar-menu-more-root") {
-                        found_more = true
+                        
                         let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
                         let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
                         if (dd[0] == undefined) { //item is null
                             id.innerHTML = '';
-                            id.remove(); break
+                            items.item(item).onmouseover = null
+                             break
                             //! TODO: don't show bar if dir is empty or null
                         }
                         /*
@@ -388,6 +390,7 @@
                         break;
                     }
                 }
+            }
             }
             let bar = document.getElementById("bar-items")
             let windows = document.getElementsByClassName("window")
@@ -496,14 +499,22 @@
             refresh_windows()
         }
         function refresh_windows() {
+            load_bar()
             let elems = document.getElementsByClassName("window")
             for (let i = 0; i != elems.length; i++) {
                 let uid = elems.item(i).id.split("-")[0]
                 document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
-                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight)
+                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight){
                     document.getElementById(uid + "-content-scrollbar").style.display = 'none'
-                else
+            }
+                else {
+                    if(document.getElementById(uid + "-content-scrollbar").style.display == 'none'){
                     document.getElementById(uid + "-content-scrollbar").style.display = 'block'
+                    if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight){
+                    document.getElementById(uid + "-content-scrollbar").style.display = 'none'
+            }
+                    }
+                }
                 //let elem = elems.item(i).children[0]
                 let elec = elems.item(i).children
                 let elem
@@ -859,24 +870,28 @@
                     </div>-->
                 </div>
             </div>
-            <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
+            <div class="bar-menu-item" id="bar-menu-favorites" dir="/fav/"><img class="bar-menu-image"
                     src="./src/img/favorites.png">
                 <div class="bar-menu-text">Favorites</div>
                 <div class="bar-menu-more"></div>
+                <div class="bar-menu-more-root"></div>
             </div>
-            <div class="bar-menu-item" id="bar-menu-docs"><img class="bar-menu-image" src="./src/img/docs.png">
+            <div class="bar-menu-item" id="bar-menu-docs" dir="/docs/"><img class="bar-menu-image" src="./src/img/docs.png">
                 <div class="bar-menu-text">Documents</div>
                 <div class="bar-menu-more"></div>
+                <div class="bar-menu-more-root"></div>
             </div>
-            <div class="bar-menu-item" id="bar-menu-settings"><img class="bar-menu-image"
+            <div class="bar-menu-item" id="bar-menu-settings" dir="/settings/"><img class="bar-menu-image"
                     style="height:27px;padding-left:2px" src="./src/img/settings.png">
                 <div class="bar-menu-text">Settings</div>
                 <div class="bar-menu-more"></div>
+                <div class="bar-menu-more-root"></div>
             </div>
-            <div class="bar-menu-item" id="bar-menu-find"><img class="bar-menu-image"
+            <div class="bar-menu-item" id="bar-menu-find" dir="/find/"><img class="bar-menu-image"
                     style="height:27px;padding-left:2px" src="./src/img/find.png">
                 <div class="bar-menu-text">Find</div>
                 <div class="bar-menu-more"></div>
+                <div class="bar-menu-more-root"></div>
             </div>
             <div class="bar-menu-item" id="bar-menu-help"><img class="bar-menu-image" src="./src/img/help.png">
                 <div class="bar-menu-text">Help</div>

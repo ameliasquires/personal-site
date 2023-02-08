@@ -363,7 +363,7 @@ class jssh {
         return e !== "";
       });
 
-      this.write_file(this.fs, pp, history_write, redir_app);
+      this.write_file(this.fs, pp, history_write.trim(), redir_app);
     } else {
       document.getElementById(this.history).innerHTML += history_write;
     }
