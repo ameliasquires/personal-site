@@ -371,25 +371,27 @@
                             id.innerHTML = ''
                             let ins = ""
                             for (let ite = 0; ite != dd.length; ite++) {
-                                let icon = ""
-                                ins += `<div class="bar-menu-item" onclick="shortcut('${items.item(item).getAttribute("dir") + dd[ite].name}');close_menu();" id="bar-menu-${dd[ite].name}">`
-                                //if (dd[ite].icon)
-                                //icon = `<img class="bar-menu-image" src="${dd[ite].icon}">`
-                                //else {
+                                if (dd[ite].dir == false) {
+                                    let icon = ""
+                                    ins += `<div class="bar-menu-item" onclick="shortcut('${items.item(item).getAttribute("dir") + dd[ite].name}');close_menu();" id="bar-menu-${dd[ite].name}">`
+                                    //if (dd[ite].icon)
+                                    //icon = `<img class="bar-menu-image" src="${dd[ite].icon}">`
+                                    //else {
 
-                                for (let l of dd[ite].content.split("\n")) {
-                                    if (l.split(" ")[0] == "meta") {
-                                        if (l.split(" ")[1] == "icon") {
-                                            icon = `<img class="bar-menu-image" src="${l.split(" ")[2]}">`
+                                    for (let l of dd[ite].content.split("\n")) {
+                                        if (l.split(" ")[0] == "meta") {
+                                            if (l.split(" ")[1] == "icon") {
+                                                icon = `<img class="bar-menu-image" src="${l.split(" ")[2]}">`
+                                            }
                                         }
                                     }
+                                    ins += icon
+                                    //}
+                                    ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
+
+
+                                    //console.log(id.children.item(ite))
                                 }
-                                ins += icon
-                                //}
-                                ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
-
-
-                                //console.log(id.children.item(ite))
                             }
                             id.innerHTML = ins;
                             items.item(item).onmouseover = ((ev) => {
@@ -792,7 +794,7 @@
                         if (a_p_c.item(ii).id == id + "-history") {
                             let his = a_p_c.item(ii).id
                             if (procs[id] == undefined)
-                                procs[id] = new jssh(fs, "/", id, inp, his)
+                                procs[id] = new jssh(fs, "/", id, inp, his, window_create)
                             procs[id].ex()
                             refresh_windows()
                             a.parentElement.parentElement.scrollTop = a.parentElement.parentElement.scrollHeight
@@ -816,30 +818,8 @@
             return prom;
         }
         let fs = []
-        function shortcut(i) {
-            let path = i.split("/")
-            let tar = path.splice(path.length - 1, 1)
-            console.log(path)
-            let temp = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
-            let ww = temp.set_wd(path.join("/"))
-            let item = ''
-            for (let zz of ww) {
-                if (zz.name == tar) {
-                    i = zz.content
-                    break
-                }
-            }
-            let parsed = i.split("\n")
-            for (let line of parsed) {
-                let words = line.split(" ")
-                if (words[0] == "window") {
-                    let t = line.split(" ")
-                    t.splice(0, 2)
-                    let id = document.getElementsByClassName("window").length
-                    window_create(id, words[1], t.join(" ").replace(/#_ID/g, id), { size: { width: 500, height: 300 }, pos: { left: 250, top: 50 } })
-                    load_bar()
-                }
-            }
+        function shortcut(i, shell = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null', window_create)) {
+            shell.ex_file(i)
         }
         function close_menu() {
             let items = document.getElementsByClassName("bar-menu-item")
@@ -853,7 +833,13 @@
                 }
             }
             document.getElementById("bar-menu-root").style.display = "none"
-            main()
+            document.getElementById("bar-menu").onclick = ((ev) => {
+                if (document.getElementById("bar-menu-root").style.display == "block")
+                    document.getElementById("bar-menu-root").style.display = "none"
+                else
+                    document.getElementById("bar-menu-root").style.display = "block"
+            })
+            load_bar()
         }
         async function main() {
             fs = await req('src/fs.json')

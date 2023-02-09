@@ -1,10 +1,11 @@
 class jssh {
-  constructor(fs, working_dir, uid, input, h) {
+  constructor(fs, working_dir, uid, input, history, window_create = null) {
     this.fs = fs;
     this.working_dir = working_dir;
     this.input = input;
-    this.history = h;
+    this.history = history;
     this.uid = uid;
+    this.window_create = window_create;
   }
   set_wd(dir) {
     //let lwd = fs
@@ -76,6 +77,12 @@ class jssh {
     //  document.getElementById(this.input).focus();
     //}, 10);
   }
+  stdout(line) {
+    if (this.history != "null" && this.input != "null")
+      document.getElementById(this.history).innerHTML += line;
+    else console.log("aaa");
+    return;
+  }
   add_file(fs, path, dir) {
     //console.log(fs, path);
     if (path.length == 1)
@@ -100,6 +107,7 @@ class jssh {
     if (path.length == 1) {
       for (let f in fs) {
         if (fs[f].name == path[0] && !fs[f].dir) {
+          //console.log(append ? fs[f].content + content : content);
           fs[f].content = append ? fs[f].content + content : content;
           return fs;
         }
@@ -146,6 +154,46 @@ class jssh {
     document.getElementById(this.history).innerHTML +=
       "jssh: " + path.join("/") + ": file or directory not found</br>";
   }
+  ex_file(path, args = []) {
+    let pa = path.split("/");
+    let it = pa.splice(pa.length - 1, 1);
+    for (let i of this.set_wd(pa.join("/") + "/")) {
+      if (i.name == it[0] && !i.dir) {
+        let cont = i.content;
+        for (let line of cont.split("\n")) {
+          console.log(line);
+          let stripped = line.split(" ");
+          switch (stripped[0]) {
+            case "window":
+              if (this.window_create != null) {
+                let t = line.split(" ");
+                t.splice(0, 2);
+                let id = document.getElementsByClassName("window").length;
+                console.log(id);
+                this.window_create(
+                  id,
+                  stripped[1],
+                  t.join(" ").replace(/#_ID/g, id),
+                  {
+                    size: { width: 500, height: 300 },
+                    pos: { left: 250, top: 50 },
+                  }
+                );
+              } else {
+                this.stdout("unable to make window reference");
+              }
+              break;
+            case "echo":
+              let t = line.split(" ");
+              t.splice(0, 1);
+              this.stdout(t.join(" "));
+              break;
+          }
+        }
+        break;
+      }
+    }
+  }
   ex() {
     let temp_working_dir = this.working_dir;
     //document.getElementById(this.history).innerHTML +=
@@ -160,7 +208,8 @@ class jssh {
       "λ " + document.getElementById(this.input).value + "</br>";
     if (stripped.includes(">")) redir = true;
     else if (stripped.includes(">>")) redir_app = true;
-    switch (stripped[0]) {
+    console.log(redir, redir_app);
+    swi: switch (stripped[0]) {
       case "touch":
         this.add_file(
           this.fs,
@@ -345,12 +394,38 @@ class jssh {
         }
         break;
       default:
+        //change newline char
+        let pa = this.clean_path(stripped[0]).split("/");
+        if (stripped[0][0] != "/") {
+          pa = this.clean_path(this.working_dir + "/" + stripped[0]).split("/");
+        }
+        let or = pa;
+        let it = pa.splice(pa.length - 1, 1);
+
+        for (let i of this.set_wd(pa.join("/") + "/")) {
+          if (i.name == it[0] && !i.dir) {
+            if (stripped[0][0] != "/")
+              this.ex_file(
+                this.clean_path(this.working_dir + "/" + stripped[0])
+              );
+            else this.ex_file(this.clean_path(stripped[0]));
+            break swi;
+          }
+        }
+
         history_write +=
-          "jssh: " +
-          stripped[0] +
-          ": command not found or not implemented</br>";
+          "jssh: " + stripped[0] + ": file or command not found</br>";
+
         break;
+      /*} else {
+          history_write +=
+            "jssh: " +
+            stripped[0] +
+            ": command not found or not implemented</br>";
+          break;
+        }*/
     }
+
     if (redir || redir_app) {
       let pp = (redir ? com.split(">") : com.split(">>"))
         .filter(function (e) {
@@ -362,7 +437,6 @@ class jssh {
       pp = pp.split("/").filter(function (e) {
         return e !== "";
       });
-
       this.write_file(this.fs, pp, history_write.trim(), redir_app);
     } else {
       document.getElementById(this.history).innerHTML += history_write;
