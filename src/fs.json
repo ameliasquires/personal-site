@@ -1,0 +1,23 @@
+[
+  {
+    "name": "apps",
+    "perms": { "r": true },
+    "dir": true,
+    "content": [
+      {
+        "name": "notepad",
+        "icon": "./src/img/notepad.png",
+        "perms": { "r": true },
+        "dir": false,
+        "content": "window Notepad <textarea onkeypress='auto_resize(this)' style='width:100%;overflow:visible;display:block;'></textarea>\nmeta icon src/img/notepad.png"
+      },
+      {
+        "name": "cmd",
+        "icon": "./src/img/cmd.png",
+        "perms": { "r": true },
+        "dir": false,
+        "content": "window cmd <div class='history' id='#_ID-history'></div><form autocomplete='off' onsubmit='exe_com(this);return false;'>λ <input id='#_ID-line' class='line' style='width:95%;' autofocus><input type='submit' style='display: none' /></form>\nmeta icon src/img/cmd.png"
+      }
+    ]
+  }
+]

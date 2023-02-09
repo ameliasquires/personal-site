@@ -348,49 +348,60 @@
             let items = document.getElementById("bar-menu-root").children
             for (let item = 0; item != items.length; item++) {
                 //console.log(items.item(item))
-                if(items.item(item).className=="bar-menu-item"){
-                let i_c = items.item(item).children
-                for (let i = 0; i != i_c.length; i++) {
-                    let id = i_c.item(i)
-                    if (id.className == "bar-menu-more-root") {
-                        
-                        let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
-                        let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
-                        if (dd[0] == undefined) { //item is null
-                            id.innerHTML = '';
-                            items.item(item).onmouseover = null
-                             break
-                            //! TODO: don't show bar if dir is empty or null
-                        }
-                        /*
-                        <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
-                            src="./src/img/notepad.png">
-                        <div class="bar-menu-text">Notepad--</div>
-                    </div>
-                        */
-                        id.innerHTML = ''
-                        let ins = ""
-                        for (let ite = 0; ite != dd.length; ite++) {
+                if (items.item(item).className == "bar-menu-item") {
+                    let i_c = items.item(item).children
+                    for (let i = 0; i != i_c.length; i++) {
+                        let id = i_c.item(i)
+                        if (id.className == "bar-menu-more-root") {
 
-                            ins += `<div class="bar-menu-item" onclick="shortcut('${dd[ite].content}');close_menu();" id="bar-menu-${dd[ite].name}">`
-                            if (dd[ite].icon)
-                                ins += `<img class="bar-menu-image" src="${dd[ite].icon}">`
-                            ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
+                            let t_s = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
+                            let dd = (t_s.set_wd(items.item(item).getAttribute("dir")))
+                            if (dd[0] == undefined) { //item is null
+                                id.innerHTML = '';
+                                items.item(item).onmouseover = null
+                                break
+                                //! TODO: don't show bar if dir is empty or null
+                            }
+                            /*
+                            <div class="bar-menu-item" id="bar-menu-favorites"><img class="bar-menu-image"
+                                src="./src/img/notepad.png">
+                            <div class="bar-menu-text">Notepad--</div>
+                        </div>
+                            */
+                            id.innerHTML = ''
+                            let ins = ""
+                            for (let ite = 0; ite != dd.length; ite++) {
+                                let icon = ""
+                                ins += `<div class="bar-menu-item" onclick="shortcut('${items.item(item).getAttribute("dir") + dd[ite].name}');close_menu();" id="bar-menu-${dd[ite].name}">`
+                                //if (dd[ite].icon)
+                                //icon = `<img class="bar-menu-image" src="${dd[ite].icon}">`
+                                //else {
+
+                                for (let l of dd[ite].content.split("\n")) {
+                                    if (l.split(" ")[0] == "meta") {
+                                        if (l.split(" ")[1] == "icon") {
+                                            icon = `<img class="bar-menu-image" src="${l.split(" ")[2]}">`
+                                        }
+                                    }
+                                }
+                                ins += icon
+                                //}
+                                ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
 
 
-                            //console.log(id.children.item(ite))
-                        }
-                        id.innerHTML = ins;
-                        items.item(item).onmouseover = ((ev) => {
-                            id.style.display = "block"
-                            items.item(item).onmouseout = ((ev) => {
-                                id.style.display = "none"
+                                //console.log(id.children.item(ite))
+                            }
+                            id.innerHTML = ins;
+                            items.item(item).onmouseover = ((ev) => {
+                                id.style.display = "block"
+                                items.item(item).onmouseout = ((ev) => {
+                                    id.style.display = "none"
+                                })
                             })
-                        })
-                        break;
+                            break;
+                        }
                     }
                 }
-            }
             }
             let bar = document.getElementById("bar-items")
             let windows = document.getElementsByClassName("window")
@@ -504,15 +515,15 @@
             for (let i = 0; i != elems.length; i++) {
                 let uid = elems.item(i).id.split("-")[0]
                 document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
-                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight){
+                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight) {
                     document.getElementById(uid + "-content-scrollbar").style.display = 'none'
-            }
+                }
                 else {
-                    if(document.getElementById(uid + "-content-scrollbar").style.display == 'none'){
-                    document.getElementById(uid + "-content-scrollbar").style.display = 'block'
-                    if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight){
-                    document.getElementById(uid + "-content-scrollbar").style.display = 'none'
-            }
+                    if (document.getElementById(uid + "-content-scrollbar").style.display == 'none') {
+                        document.getElementById(uid + "-content-scrollbar").style.display = 'block'
+                        if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight) {
+                            document.getElementById(uid + "-content-scrollbar").style.display = 'none'
+                        }
                     }
                 }
                 //let elem = elems.item(i).children[0]
@@ -792,8 +803,32 @@
                 }
             }
         }
-        let fs = [{ name: "apps", perms: { r: true }, dir: true, content: [{ name: "notepad", icon: "./src/img/notepad.png", perms: { r: true }, dir: false, content: "window Notepad <textarea onkeypress=\\'auto_resize(this)\\' style=\\'width:100%;overflow:visible;display:block;\\'></textarea>" }, { name: "cmd", icon: "./src/img/cmd.png", perms: { r: true }, dir: false, content: "window cmd <div class=\\'history\\' id=\\'#_ID-history\\'></div><form autocomplete=\\'off\\' onsubmit=\\'exe_com(this);return false;\\'>λ <input id=\\'#_ID-line\\' class=\\'line\\' style=\\'width:95%;\\' autofocus><input type=\\'submit\\' style=\\'display: none\\' /></form>" }] }]
+        function req(url) {
+            let prom = new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.responseType = 'json';
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.send();
+            })
+            return prom;
+        }
+        let fs = []
         function shortcut(i) {
+            let path = i.split("/")
+            let tar = path.splice(path.length - 1, 1)
+            console.log(path)
+            let temp = new jssh(fs, '/', document.getElementsByClassName('window').length, 'null', 'null')
+            let ww = temp.set_wd(path.join("/"))
+            let item = ''
+            for (let zz of ww) {
+                if (zz.name == tar) {
+                    i = zz.content
+                    break
+                }
+            }
             let parsed = i.split("\n")
             for (let line of parsed) {
                 let words = line.split(" ")
@@ -820,7 +855,8 @@
             document.getElementById("bar-menu-root").style.display = "none"
             main()
         }
-        function main() {
+        async function main() {
+            fs = await req('src/fs.json')
             document.getElementById("bar-menu").onclick = ((ev) => {
                 if (document.getElementById("bar-menu-root").style.display == "block")
                     document.getElementById("bar-menu-root").style.display = "none"
@@ -876,7 +912,8 @@
                 <div class="bar-menu-more"></div>
                 <div class="bar-menu-more-root"></div>
             </div>
-            <div class="bar-menu-item" id="bar-menu-docs" dir="/docs/"><img class="bar-menu-image" src="./src/img/docs.png">
+            <div class="bar-menu-item" id="bar-menu-docs" dir="/docs/"><img class="bar-menu-image"
+                    src="./src/img/docs.png">
                 <div class="bar-menu-text">Documents</div>
                 <div class="bar-menu-more"></div>
                 <div class="bar-menu-more-root"></div>
