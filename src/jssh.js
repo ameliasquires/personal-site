@@ -80,7 +80,6 @@ class jssh {
   stdout(line) {
     if (this.history != "null" && this.input != "null")
       document.getElementById(this.history).innerHTML += line;
-    else console.log("aaa");
     return;
   }
   add_file(fs, path, dir) {
@@ -108,7 +107,7 @@ class jssh {
       for (let f in fs) {
         if (fs[f].name == path[0] && !fs[f].dir) {
           //console.log(append ? fs[f].content + content : content);
-          fs[f].content = append ? fs[f].content + content : content;
+          fs[f].content = append ? fs[f].content + "\n" + content : content;
           return fs;
         }
       }
@@ -135,7 +134,7 @@ class jssh {
     //console.log(fs, path);
     if (path.length == 1) {
       for (let f in fs) {
-        console.log(f);
+        //console.log(f);
         if (fs[f].name == path[0]) {
           fs.splice(f, 1);
           break;
@@ -161,23 +160,33 @@ class jssh {
       if (i.name == it[0] && !i.dir) {
         let cont = i.content;
         for (let line of cont.split("\n")) {
-          console.log(line);
+          //console.log(line);
           let stripped = line.split(" ");
           switch (stripped[0]) {
             case "window":
               if (this.window_create != null) {
                 let t = line.split(" ");
                 t.splice(0, 2);
+                let settings = {};
+                let con2 = cont.split("\n");
+                for (let l of con2) {
+                  if (l.trim().split(" ")[0] == "meta") {
+                    let nuwu = l.trim().split(" ");
+                    nuwu.splice(0, 1);
+                    let trim = nuwu.join(" ").trim().split(",");
+                    for (let i of trim) {
+                      settings[i.trim().split(" ")[0]] = i.trim().split(" ")[1];
+                    }
+                  }
+                }
+                console.log(settings);
                 let id = document.getElementsByClassName("window").length;
-                console.log(id);
+                //console.log(id);
                 this.window_create(
                   id,
                   stripped[1],
                   t.join(" ").replace(/#_ID/g, id),
-                  {
-                    size: { width: 500, height: 300 },
-                    pos: { left: 250, top: 50 },
-                  }
+                  settings
                 );
               } else {
                 this.stdout("unable to make window reference");
@@ -188,17 +197,24 @@ class jssh {
               t.splice(0, 1);
               this.stdout(t.join(" "));
               break;
+            case "js":
+              let id = document.getElementsByClassName("window").length;
+              let tt = line.split(" ");
+              tt.splice(0, 1);
+              eval(tt.join(" ").replace(/#_ID/g, id));
+              break;
           }
         }
         break;
       }
     }
   }
-  ex() {
+  ex(stdin = null) {
     let temp_working_dir = this.working_dir;
     //document.getElementById(this.history).innerHTML +=
     //  "λ " + document.getElementById(this.input).value + "</br>";
     let com = document.getElementById(this.input).value;
+    if (stdin != null) com = stdin;
     let stripped = com.split(" ");
     let redir = false,
       redir_app = false;
@@ -208,7 +224,7 @@ class jssh {
       "λ " + document.getElementById(this.input).value + "</br>";
     if (stripped.includes(">")) redir = true;
     else if (stripped.includes(">>")) redir_app = true;
-    console.log(redir, redir_app);
+    //console.log(redir, redir_app);
     swi: switch (stripped[0]) {
       case "touch":
         this.add_file(

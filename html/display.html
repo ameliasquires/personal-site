@@ -345,6 +345,12 @@
         }
         let bar_items_left = []
         function load_bar() {
+            document.getElementById("bar-menu").onclick = ((ev) => {
+                if (document.getElementById("bar-menu-root").style.display == "block")
+                    document.getElementById("bar-menu-root").style.display = "none"
+                else
+                    document.getElementById("bar-menu-root").style.display = "block"
+            })
             let items = document.getElementById("bar-menu-root").children
             for (let item = 0; item != items.length; item++) {
                 //console.log(items.item(item))
@@ -380,9 +386,21 @@
 
                                     for (let l of dd[ite].content.split("\n")) {
                                         if (l.split(" ")[0] == "meta") {
-                                            if (l.split(" ")[1] == "icon") {
-                                                icon = `<img class="bar-menu-image" src="${l.split(" ")[2]}">`
+                                            let tem = l.split(" ")
+                                            tem.splice(0, 1);
+                                            tem = tem.join(" ")
+                                            //console.log(tem)
+                                            tem = tem.split(",")
+                                            //console.log(tem)
+                                            for (let tw of tem) {
+                                                if (tw.trim().split(" ")[0] == "icon") {
+                                                    icon = `<img class="bar-menu-image" src="${tw.trim().split(" ")[1]}">`
+                                                }
                                             }
+                                            /*if (l.split(" ")[1] == "icon") {
+                                                icon = `<img class="bar-menu-image" src="${l.split(" ")[2]}">`
+                                            }*/
+
                                         }
                                     }
                                     ins += icon
@@ -480,8 +498,8 @@
         function window_create(uid, name, content, options = {}) {
             let lines = content.split("</br>").length
             let a = ''
-            let size = (options.size != undefined) ? ("width:" + options.size.width + "px;height:" + options.size.height + "px;") : ("width:" + Math.max(document.body.clientWidth * .56, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;");
-            let pos = (options.pos != undefined) ? ("left:" + options.pos.left + "px;top:" + options.pos.top + "px;") : ("left:0px;top:0px;");
+            let size = (options.width != undefined && options.height != undefined) ? ("width:" + options.width + "px;height:" + options.height + "px;") : ("width:" + Math.max(document.body.clientWidth * .56, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;");
+            let pos = (options.left != undefined && options.top != undefined) ? ("left:" + options.left + "px;top:" + options.top + "px;") : ("left:0px;top:0px;");
             a += "<div id='" + uid + "-root' class='window' style=\"" + size + pos + "position:absolute;\" window-name='" + name + "'>"
             //console.log(document.getElementById(uid).attributes["window-name"].value)
             a += "<div id='" + uid + "-head' class='head-border' window-name='" + name + "'> <div style='color:fdffff'>" + name + "</div>"
@@ -490,21 +508,27 @@
 <path style=" stroke:none;fill-rule:evenodd;fill:rgb(2.745098%,3.137255%,2.745098%);fill-opacity:1;" d="M 8.476562 6.042969 C 9.042969 6.042969 9.613281 6.042969 10.179688 6.042969 C 10.179688 6.332031 10.179688 6.625 10.179688 6.914062 C 10.464844 6.914062 10.746094 6.914062 11.03125 6.914062 C 11.03125 7.203125 11.03125 7.492188 11.03125 7.78125 C 11.597656 7.78125 12.167969 7.78125 12.734375 7.78125 C 12.734375 7.492188 12.734375 7.203125 12.734375 6.914062 C 13.019531 6.914062 13.304688 6.914062 13.585938 6.914062 C 13.585938 6.625 13.585938 6.332031 13.585938 6.042969 C 14.15625 6.042969 14.722656 6.042969 15.289062 6.042969 C 15.289062 6.332031 15.289062 6.625 15.289062 6.914062 C 15.007812 6.914062 14.722656 6.914062 14.4375 6.914062 C 14.4375 7.203125 14.4375 7.492188 14.4375 7.78125 C 14.15625 7.78125 13.871094 7.78125 13.585938 7.78125 C 13.585938 8.074219 13.585938 8.363281 13.585938 8.652344 C 13.304688 8.652344 13.019531 8.652344 12.734375 8.652344 C 12.734375 8.941406 12.734375 9.230469 12.734375 9.523438 C 13.019531 9.523438 13.304688 9.523438 13.585938 9.523438 C 13.585938 9.8125 13.585938 10.101562 13.585938 10.390625 C 13.871094 10.390625 14.15625 10.390625 14.4375 10.390625 C 14.4375 10.679688 14.4375 10.972656 14.4375 11.261719 C 14.722656 11.261719 15.007812 11.261719 15.289062 11.261719 C 15.289062 11.550781 15.289062 11.839844 15.289062 12.128906 C 14.722656 12.128906 14.15625 12.128906 13.585938 12.128906 C 13.585938 11.839844 13.585938 11.550781 13.585938 11.261719 C 13.304688 11.261719 13.019531 11.261719 12.734375 11.261719 C 12.734375 10.972656 12.734375 10.679688 12.734375 10.390625 C 12.167969 10.390625 11.597656 10.390625 11.03125 10.390625 C 11.03125 10.679688 11.03125 10.972656 11.03125 11.261719 C 10.746094 11.261719 10.464844 11.261719 10.179688 11.261719 C 10.179688 11.550781 10.179688 11.839844 10.179688 12.128906 C 9.613281 12.128906 9.042969 12.128906 8.476562 12.128906 C 8.476562 11.839844 8.476562 11.550781 8.476562 11.261719 C 8.761719 11.261719 9.042969 11.261719 9.328125 11.261719 C 9.328125 10.972656 9.328125 10.679688 9.328125 10.390625 C 9.613281 10.390625 9.894531 10.390625 10.179688 10.390625 C 10.179688 10.101562 10.179688 9.8125 10.179688 9.523438 C 10.464844 9.523438 10.746094 9.523438 11.03125 9.523438 C 11.03125 9.230469 11.03125 8.941406 11.03125 8.652344 C 10.746094 8.652344 10.464844 8.652344 10.179688 8.652344 C 10.179688 8.363281 10.179688 8.074219 10.179688 7.78125 C 9.894531 7.78125 9.613281 7.78125 9.328125 7.78125 C 9.328125 7.492188 9.328125 7.203125 9.328125 6.914062 C 9.042969 6.914062 8.761719 6.914062 8.476562 6.914062 C 8.476562 6.625 8.476562 6.332031 8.476562 6.042969 Z M 8.476562 6.042969 "/>
 </g>
 </svg></div></div>`
-            a += "<div id='" + uid + "-resize-n' class='resize-n'></div>"
-            a += "<div id='" + uid + "-resize-s' class='resize-s'></div>"
-            a += "<div id='" + uid + "-resize-e' class='resize-e'></div>"
-            a += "<div id='" + uid + "-resize-w' class='resize-w'></div>"
+            if (options.resize != false && options.resize != "false") {
+                a += "<div id='" + uid + "-resize-n' class='resize-n'></div>"
+                a += "<div id='" + uid + "-resize-s' class='resize-s'></div>"
+                a += "<div id='" + uid + "-resize-e' class='resize-e'></div>"
+                a += "<div id='" + uid + "-resize-w' class='resize-w'></div>"
+            }
             a += "<div style='height:25px;'></div>"
             a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 26px);width:100%'>"
-            a += "<div id='" + uid + "-content-content' class='content-content'>" + content + "</div>"
-            a += "<div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
-            a += "</div>"
-            a += "</div>"
 
-            a += "<div id='" + uid + "-resize-ne' class='resize-ne'></div>"
-            a += "<div id='" + uid + "-resize-nw' class='resize-nw'></div>"
-            a += "<div id='" + uid + "-resize-sw' class='resize-sw'></div>"
-            a += "<div id='" + uid + "-resize-es' class='resize-es'></div>"
+            a += "<div id='" + uid + "-content-content' class='content-content'>" + content + "</div>"
+            if (options.scroll != false && options.scroll != "false") {
+                a += "<div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
+                a += "</div>"
+            }
+            a += "</div>"
+            if (options.resize != false && options.resize != "false") {
+                a += "<div id='" + uid + "-resize-ne' class='resize-ne'></div>"
+                a += "<div id='" + uid + "-resize-nw' class='resize-nw'></div>"
+                a += "<div id='" + uid + "-resize-sw' class='resize-sw'></div>"
+                a += "<div id='" + uid + "-resize-es' class='resize-es'></div>"
+            }
             document.getElementById("root").innerHTML += a
             //console.log(document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight))
 
@@ -516,18 +540,21 @@
             let elems = document.getElementsByClassName("window")
             for (let i = 0; i != elems.length; i++) {
                 let uid = elems.item(i).id.split("-")[0]
-                document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
-                if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight) {
-                    document.getElementById(uid + "-content-scrollbar").style.display = 'none'
-                }
-                else {
-                    if (document.getElementById(uid + "-content-scrollbar").style.display == 'none') {
-                        document.getElementById(uid + "-content-scrollbar").style.display = 'block'
-                        if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight) {
-                            document.getElementById(uid + "-content-scrollbar").style.display = 'none'
+                try {
+                    document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
+
+                    if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight) {
+                        document.getElementById(uid + "-content-scrollbar").style.display = 'none'
+                    }
+                    else {
+                        if (document.getElementById(uid + "-content-scrollbar").style.display == 'none') {
+                            document.getElementById(uid + "-content-scrollbar").style.display = 'block'
+                            if (document.getElementById(uid + "-content-scrollbar-point").clientHeight >= document.getElementById(uid + "-content-root").clientHeight) {
+                                document.getElementById(uid + "-content-scrollbar").style.display = 'none'
+                            }
                         }
                     }
-                }
+                } catch (e) { }
                 //let elem = elems.item(i).children[0]
                 let elec = elems.item(i).children
                 let elem
@@ -833,14 +860,12 @@
                 }
             }
             document.getElementById("bar-menu-root").style.display = "none"
-            document.getElementById("bar-menu").onclick = ((ev) => {
-                if (document.getElementById("bar-menu-root").style.display == "block")
-                    document.getElementById("bar-menu-root").style.display = "none"
-                else
-                    document.getElementById("bar-menu-root").style.display = "block"
-            })
+
             load_bar()
         }
+
+
+
         async function main() {
             fs = await req('src/fs.json')
             document.getElementById("bar-menu").onclick = ((ev) => {
