@@ -201,7 +201,13 @@ class jssh {
               let id = document.getElementsByClassName("window").length;
               let tt = line.split(" ");
               tt.splice(0, 1);
-              eval(tt.join(" ").replace(/#_ID/g, id));
+              (async () => {
+                let time = new Date().getTime();
+                await eval(tt.join(" ").replace(/#_ID/g, id));
+                this.stdout(
+                  "took " + Math.abs(new Date().getTime() - time) / 1000 + "s"
+                );
+              })();
               break;
           }
         }
