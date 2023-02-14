@@ -154,6 +154,7 @@ class jssh {
       "jssh: " + path.join("/") + ": file or directory not found</br>";
   }
   ex_file(path, args = []) {
+    let id = document.getElementsByClassName("window").length;
     let pa = path.split("/");
     let it = pa.splice(pa.length - 1, 1);
     for (let i of this.set_wd(pa.join("/") + "/")) {
@@ -180,7 +181,7 @@ class jssh {
                   }
                 }
                 console.log(settings);
-                let id = document.getElementsByClassName("window").length;
+                //let id = document.getElementsByClassName("window").length;
                 //console.log(id);
                 this.window_create(
                   id,
@@ -198,7 +199,6 @@ class jssh {
               this.stdout(t.join(" "));
               break;
             case "js":
-              let id = document.getElementsByClassName("window").length;
               let tt = line.split(" ");
               tt.splice(0, 1);
               (async () => {
