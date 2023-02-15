@@ -5,6 +5,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script rel="preconnect" src="./src/jssh.js" crossorigin></script>
+    <script rel="preconnect" src="./src/window-utils.js" crossorigin></script>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -331,6 +332,10 @@
 
         input:hover {
             cursor: text;
+        }
+        button{
+            border-radius: 0px;
+            background-color: #c1c1c1;
         }
     </style>
     <script>
@@ -868,6 +873,7 @@
 
         async function main() {
             fs = await req('src/fs.json')
+            util.alert("test")
             document.getElementById("bar-menu").onclick = ((ev) => {
                 if (document.getElementById("bar-menu-root").style.display == "block")
                     document.getElementById("bar-menu-root").style.display = "none"
