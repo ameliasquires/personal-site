@@ -1,9 +1,152 @@
 let util = {
-    alert(inp){
-        
-        window_create(document.getElementsByClassName("window").length,
-        (inp.title == undefined ? "Alert" : inp.title),
-        "<img src='./src/img/"+(inp.content == undefined ? "info" : inp.content) +".png'> <button>ok</button>"+ (inp.content == undefined ? "Alert" : inp.content),
-        {width:220,height:110,resize:false})
-    }
-}
+  async alert(inp) {
+    let promise = new Promise(async (res, rej) => {
+      bu = [];
+      if (inp.buttons == undefined) {
+        bu = ["ok", "no"];
+      } else {
+        bu = inp.buttons;
+      }
+      let buttons = "";
+      let i = document.getElementsByClassName("window").length;
+      for (let b of bu) {
+        buttons +=
+          "<button id='" +
+          i +
+          "-content-button-" +
+          b +
+          "' style='padding-left:15px;padding-right:15px;margin-right:10px;text-align: center;'>" +
+          b +
+          "</button>";
+      }
+
+      await window_create(
+        i,
+        inp.title == undefined ? "Alert" : inp.title,
+        `<table><tr><td style='padding: 5px;'><img src='./src/img/${
+          inp.type == undefined ? "info" : inp.type
+        }.png'></td></tr>
+      <tr >
+      <td style='padding: 5px;'>${
+        inp.content == undefined ? "Alert" : inp.content
+      }</td>
+        <td style='padding: 5px;' >${buttons}</td>
+        </tr></table>`,
+        { width: 220, height: 110, resize: false }
+      );
+      for (let b of bu) {
+        document.getElementById(i + "-content-button-" + b).onclick = () => {
+          res(b);
+        };
+      }
+    });
+    return promise;
+  },
+  async fd(inp) {
+    let promise = new Promise(async (res, rej) => {
+      let i = document.getElementsByClassName("window").length;
+      let sel = [];
+      await window_create(i, "fs", "");
+      function load() {
+        let ll = new jssh(fs, "/", i, "null", "null", window_create);
+        let tfs = ll.set_wd(ll.clean_path(inp.path));
+        let files = "";
+        for (let f of tfs) {
+          if (f.dir) {
+            files +=
+              "<div id='" +
+              i +
+              "-id-name-" +
+              f.name +
+              "' style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/folder.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
+              f.name +
+              "</div></div>";
+          } else {
+            files +=
+              "<div id='" +
+              i +
+              "-id-name-" +
+              f.name +
+              "'style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/notepad.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
+              f.name +
+              "</div></div>";
+          }
+        }
+        files +=
+          "<div id='" +
+          i +
+          "-fd-bottom' class='fd-bottom' >file/directory name: <div style='display:inline-block;' id='" +
+          i +
+          "-fd-bottom-sel'>" +
+          sel.join(",") +
+          (sel.length == 0 ? "select a file!" : "") +
+          "</div>" +
+          "<button id='" +
+          i +
+          "-content-button-sub' style='padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;position:absolute;right:0;'>submit</button>" +
+          "</div>";
+        document.getElementById(i + "-content-content").innerHTML = files;
+        for (let f of tfs) {
+          let tt = document.getElementById(i + "-id-name-" + f.name);
+          let dou = false;
+          tt.onclick = (ev) => {
+            if (dou) {
+              console.log(f, inp);
+              if (f.dir) {
+                inp.path += f.name;
+              } else {
+                if (f.name.includes(".exe"))
+                  ll.ex_file(inp.path + "/" + f.name);
+                else {
+                  if (inp.open_file == true || inp.open_file == undefined) {
+                    let iii = ll.ex_file("/apps/notepad.exe");
+                    document.getElementById(
+                      iii + "-content-content"
+                    ).firstChild.value = ll.get_file(
+                      inp.path + "/" + f.name
+                    ).content;
+                  } else {
+                    return inp.path + "/" + f.name;
+                  }
+                  //console.log();
+                }
+              }
+              load();
+              dou = false;
+            } else {
+              dou = true;
+
+              tt.style.backgroundColor = "blue";
+              setTimeout(() => {
+                if (dou) {
+                  if (ev.ctrlKey) {
+                    if (sel.includes(f.name)) {
+                      sel.splice(sel.indexOf(f.name), 1);
+                    } else sel.push(f.name);
+                  } else sel = [f.name];
+                  //sel = [f.name];
+                  document.getElementById(i + "-fd-bottom-sel").innerHTML =
+                    sel.join(",") + (sel.length == 0 ? "select a file!" : "");
+                  for (let aa of tfs) {
+                    let ttt = document.getElementById(
+                      i + "-id-name-" + aa.name
+                    );
+                    if (sel.includes(aa.name)) {
+                      ttt.style.backgroundColor = "blue";
+                    } else {
+                      ttt.style.backgroundColor = "";
+                    }
+                  }
+                  //load();
+                  dou = false;
+                }
+              }, 200);
+            }
+          };
+        }
+      }
+      load();
+    });
+    return promise;
+  },
+};

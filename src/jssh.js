@@ -214,6 +214,18 @@ class jssh {
         break;
       }
     }
+    return id;
+  }
+  get_file(path) {
+    let zz = path.split("/");
+    let ff = zz.splice(zz.length - 1, 1);
+    let ww = this.set_wd(zz.join("/"));
+    for (let f of ww) {
+      if (f.name == ff) {
+        //console.log(f);
+        return f;
+      }
+    }
   }
   ex(stdin = null) {
     let temp_working_dir = this.working_dir;
