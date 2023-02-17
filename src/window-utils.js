@@ -72,18 +72,35 @@ let util = {
               "</div></div>";
           }
         }
+        let opts = "";
+        for (let uwu of fs_types) {
+          opts +=
+            "<option>(" + uwu.identifier + ") " + uwu.descriptor + "</option>";
+        }
         files +=
           "<div id='" +
           i +
-          "-fd-bottom' class='fd-bottom' >file/directory name: <div style='display:inline-block;' id='" +
+          "-fd-bottom' class='fd-bottom' ><div id='" +
+          i +
+          "-fd-bar-top'><div style='width:70px;display:inline-block;'> File <u>n</u>ame: </div><div style='background-color:white;display:inline-block;width:40%' ><input style='display:inline-block;text-shadow:none;width:100%;' id='" +
+          i +
+          "-fd-bottom-sel' value='" +
+          sel.join(",") +
+          (sel.length == 0 ? "Untitled" : "") +
+          "'></div><button id='" +
+          i +
+          "-content-button-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>save</button></div>" +
+          "<div id='" +
+          i +
+          "-fd-bar-bottom'>" +
+          "<div style='width:70px;display:inline-block;'>File <u>t</u>ype: </div><div style='background-color:white;display:inline-block;width:40%' ><select style='display:inline-block;text-shadow:none;width:100%;' id='" +
           i +
           "-fd-bottom-sel'>" +
-          sel.join(",") +
-          (sel.length == 0 ? "select a file!" : "") +
-          "</div>" +
+          opts +
+          "'</select>" +
           "<button id='" +
           i +
-          "-content-button-sub' style='padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;position:absolute;right:0;'>submit</button>" +
+          "-content-button-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>cancel</button></div>" +
           "</div>";
         document.getElementById(i + "-content-content").innerHTML = files;
         for (let f of tfs) {
@@ -125,8 +142,8 @@ let util = {
                     } else sel.push(f.name);
                   } else sel = [f.name];
                   //sel = [f.name];
-                  document.getElementById(i + "-fd-bottom-sel").innerHTML =
-                    sel.join(",") + (sel.length == 0 ? "select a file!" : "");
+                  document.getElementById(i + "-fd-bottom-sel").value =
+                    sel.join(",") + (sel.length == 0 ? "Untitled" : "");
                   for (let aa of tfs) {
                     let ttt = document.getElementById(
                       i + "-id-name-" + aa.name

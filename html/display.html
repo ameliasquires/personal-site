@@ -317,7 +317,7 @@
 
         .fd-bottom {
             width: 100%;
-            height: 26px;
+            height: 56px;
             background-color: #b1b1b1;
             position: absolute;
             bottom: 0;
@@ -359,6 +359,13 @@
         button {
             border-radius: 0px;
             background-color: #c1c1c1;
+        }
+
+        select,
+        option {
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+            border-radius: 0;
         }
     </style>
     <script>
@@ -898,9 +905,10 @@
         }
 
 
-
+        let fs_types;
         async function main() {
             fs = await req('src/fs.json')
+            fs_types = await req('src/fs-types.json')
             fd = await util.fd({ path: '/', filetype: '*' })
             console.log(fd)
             document.getElementById("bar-menu").onclick = ((ev) => {
