@@ -6,7 +6,7 @@
     "content": []
   },
   {
-    "name": "file",
+    "name": "file.txt",
     "perms": { "r": true },
     "dir": false,
     "content": "hi"

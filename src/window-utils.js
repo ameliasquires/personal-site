@@ -46,11 +46,21 @@ let util = {
     let promise = new Promise(async (res, rej) => {
       let i = document.getElementsByClassName("window").length;
       let sel = [];
+      let sel_t_n = 0
+      let sel_t = fs_types[sel_t_n]
+      l_b_width = 80
       await window_create(i, "fs", "");
       function load() {
+        let fil = []
         let ll = new jssh(fs, "/", i, "null", "null", window_create);
         let tfs = ll.set_wd(ll.clean_path(inp.path));
+        //console.log(sel_t)
         let files = "";
+        files += "<div id='"+i+"-fs-inner-cont' style='width:100%;height:100%;display:flex;flex-direction:row;flex-wrap:wrap'>"
+        //left bar
+        files+= "<div id='"+i+"-fs-left-bar' style='background-color:red;height:100%;width:"+l_b_width+"'></div>"
+        files += "<div id='"+i+"-resize-e' class='resize-e' style='position:relative;right:0;'></div>"
+        files += "<div id='"+i+"-fs-inner-cont' style='flex:1;align-content: flex-start;display:flex;flex-direction:row;flex-wrap:wrap'>"
         for (let f of tfs) {
           if (f.dir) {
             files +=
@@ -61,7 +71,9 @@ let util = {
               "' style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/folder.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
               f.name +
               "</div></div>";
+            fil.push(f)
           } else {
+            if(RegExp(sel_t.regex,"g").test(f.name)){
             files +=
               "<div id='" +
               i +
@@ -70,12 +82,18 @@ let util = {
               "'style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/notepad.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
               f.name +
               "</div></div>";
+              fil.push(f)
+          }
           }
         }
+        files+="</div>"
         let opts = "";
         for (let uwu of fs_types) {
+          let aad = ""
+          if(uwu==sel_t)
+            aad = "selected"
           opts +=
-            "<option>(" + uwu.identifier + ") " + uwu.descriptor + "</option>";
+            "<option "+aad+">(" + uwu.identifier + ") " + uwu.descriptor + "</option>";
         }
         files +=
           "<div id='" +
@@ -93,9 +111,9 @@ let util = {
           "<div id='" +
           i +
           "-fd-bar-bottom'>" +
-          "<div style='width:70px;display:inline-block;'>File <u>t</u>ype: </div><div style='background-color:white;display:inline-block;width:40%' ><select style='display:inline-block;text-shadow:none;width:100%;' id='" +
+          "<div  style='width:70px;display:inline-block;'>File <u>t</u>ype: </div><div style='background-color:white;display:inline-block;width:40%' ><select style='display:inline-block;text-shadow:none;width:100%;' id='" +
           i +
-          "-fd-bottom-sel'>" +
+          "-fd-bottom2-sel' >"+
           opts +
           "'</select>" +
           "<button id='" +
@@ -103,12 +121,14 @@ let util = {
           "-content-button-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>cancel</button></div>" +
           "</div>";
         document.getElementById(i + "-content-content").innerHTML = files;
-        for (let f of tfs) {
+        //console.log(tfs)
+        for (let f of fil) {
           let tt = document.getElementById(i + "-id-name-" + f.name);
+          //console.log(tt,f)
           let dou = false;
           tt.onclick = (ev) => {
             if (dou) {
-              console.log(f, inp);
+              //console.log(f, inp);
               if (f.dir) {
                 inp.path += f.name;
               } else {
@@ -161,6 +181,10 @@ let util = {
             }
           };
         }
+        document.getElementById(i +"-fd-bottom2-sel").onchange = (ev) => {
+          sel_t = fs_types[ev.target.selectedIndex]
+          load()
+        };
       }
       load();
     });

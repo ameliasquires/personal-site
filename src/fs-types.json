@@ -1,4 +1,4 @@
 [
-  { "identifier": "*", "descriptor": "All Files", "regex": "/(.*)/g" },
-  { "identifier": "*.txt", "descriptor": "Text Files", "regex": "/(.*txt$)/g" }
+  { "identifier": "*", "descriptor": "All Files", "regex": "(.*)" },
+  { "identifier": "*.txt", "descriptor": "Text Files", "regex": "(.*txt$)" }
 ]
