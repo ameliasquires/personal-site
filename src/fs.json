@@ -3,7 +3,19 @@
     "name": "nya",
     "perms": { "r": true },
     "dir": true,
+    "content": [{
+    "name": "uwu",
+    "perms": { "r": true },
+    "dir": true,
+    "content": [
+      {
+    "name": "nya",
+    "perms": { "r": true },
+    "dir": true,
     "content": []
+  }
+    ]
+  }]
   },
   {
     "name": "file.txt",

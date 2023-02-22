@@ -50,16 +50,59 @@ let util = {
       let sel_t = fs_types[sel_t_n]
       l_b_width = 80
       await window_create(i, "fs", "");
-      function load() {
+      async function load() {
         let fil = []
-        let ll = new jssh(fs, "/", i, "null", "null", window_create);
+        let ll = await new jssh(fs, "/", i, "null", "null", window_create);
         let tfs = ll.set_wd(ll.clean_path(inp.path));
         //console.log(sel_t)
         let files = "";
-        files += "<div id='"+i+"-fs-inner-cont' style='width:100%;height:100%;display:flex;flex-direction:row;flex-wrap:wrap'>"
+        files += "<div id='"+i+"-fs-cont-root' style='width:100%;height:100%;display:inline-flex;flex-direction:row;flex-wrap:wrap'>"
         //left bar
-        files+= "<div id='"+i+"-fs-left-bar' style='background-color:red;height:100%;width:"+l_b_width+"'></div>"
-        files += "<div id='"+i+"-resize-e' class='resize-e' style='position:relative;right:0;'></div>"
+        //console.log(inp.path)
+        let ppp = inp.path.split("/").filter(function (e) {
+        return e !== "";
+      })
+
+        
+        function rec_bar_fun(cdir,target_full,target_ind,padding,patt){
+          let ret = ""
+          for(let f of cdir){
+            if(f.dir){
+              //console.log(f.name,target_full,target_ind)
+              let t_ret = ''
+              let ttu = false
+              if(f.name==target_full[target_ind]){
+                ttu = true
+                t_ret += rec_bar_fun(f.content,target_full,target_ind+1,padding+5,patt+"/"+f.name)
+              }
+              ret += "<div id='"+patt + "/"+ f.name + "' style='white-space:nowrap;width:100%;user-select:none;"+(ttu&&target_ind==target_full.length - 1?"background-color:rgba(0,0,0,.25);":"")+";height:20px;margin-left:"+padding+"'>"+(ttu?"v ":"> ")+f.name+"</div>" + t_ret
+                //console.log(false,f.name)
+                
+            }
+          }
+          return ret
+        }
+
+        let bar_opt =  "<div id='/' style='white-space:nowrap;width:100%;user-select:none;;height:20px;margin-left:"+0+"'>v /</div>"
+                + (rec_bar_fun(fs,ppp,0,5,''))
+      
+        /*
+        for(let dd of ppp){
+          paa+=5
+          cur_pat.push(dd)
+          console.log(cur_pat,dd)
+          tt_ppp = "/" + cur_pat.join("/")
+          console.log(dd)
+          let ttwd = (ll.set_wd(tt_ppp))
+          for(let ff of ttwd){
+            if(ff.dir){
+              bar_opt+="<div style='width:80px;height:20px;background-color:blue;margin-left:"+paa+"'>"+ff.name+"</div>"
+            }
+          }
+        }*/
+        
+        files+= "<div id='"+i+"-fs-left-bar' onscroll='return false;' style='overflow:hidden;height:100%;width:"+l_b_width+"'>"+bar_opt+"</div>"
+        files += "<div id='"+i+"-left-pane-resize-e' class='resize-e' style='position:relative;right:1;background-color:#aaaaaa;height:100%;'></div>"
         files += "<div id='"+i+"-fs-inner-cont' style='flex:1;align-content: flex-start;display:flex;flex-direction:row;flex-wrap:wrap'>"
         for (let f of tfs) {
           if (f.dir) {
@@ -96,7 +139,7 @@ let util = {
             "<option "+aad+">(" + uwu.identifier + ") " + uwu.descriptor + "</option>";
         }
         files +=
-          "<div id='" +
+          "</div><div id='" +
           i +
           "-fd-bottom' class='fd-bottom' ><div id='" +
           i +
@@ -119,9 +162,45 @@ let util = {
           "<button id='" +
           i +
           "-content-button-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>cancel</button></div>" +
-          "</div>";
+          "";
         document.getElementById(i + "-content-content").innerHTML = files;
         //console.log(tfs)
+        //util.scrollbar(document.getElementById(i+"-fs-inner-cont"))
+        document.getElementById(i+"-fs-inner-cont").oncontextmenu = (ev) => {
+          return false
+        }
+        document.getElementById(i +"-content-button-sub").onclick = () => {
+          res(inp.path+document.getElementById(i +"-fd-bottom-sel").value)
+          document.getElementById(i+"-root").remove()
+            
+          }
+        document.getElementById(i+"-left-pane-resize-e").onmousedown = (ev) => {
+          let elep = document.getElementById(i+"-fs-left-bar")
+          let px = ev.clientX
+          document.body.style.cursor = "ew-resize"
+          document.body.style.userSelect = "none"
+          document.onmouseup = (() => {
+              document.body.style.userSelect = ""
+              document.onmousemove = null
+              document.onmouseup = null
+              document.body.style.cursor = ''
+
+          })
+          
+          document.onmousemove = (ev) => {
+            elep.style.width = (parseInt(elep.clientWidth) + (ev.clientX - px)) + "px"
+            px = (ev.clientX)
+          }
+        }
+        let aaaa = document.getElementById(i+"-fs-left-bar").children
+          //console.log(aaaa)
+          for(let zz = 0; zz!=aaaa.length; zz++){
+            //console.log(zz)
+            aaaa.item(zz).onclick = (()=>{
+              inp.path = aaaa.item(zz).id
+              load()
+            })
+          }
         for (let f of fil) {
           let tt = document.getElementById(i + "-id-name-" + f.name);
           //console.log(tt,f)
@@ -130,7 +209,7 @@ let util = {
             if (dou) {
               //console.log(f, inp);
               if (f.dir) {
-                inp.path += f.name;
+                inp.path += f.name + "/";
               } else {
                 if (f.name.includes(".exe"))
                   ll.ex_file(inp.path + "/" + f.name);
@@ -143,7 +222,9 @@ let util = {
                       inp.path + "/" + f.name
                     ).content;
                   } else {
-                    return inp.path + "/" + f.name;
+                    //console.log(inp.path,'/',f.name)
+                    inp.path = inp.path + f.name  + "/";
+                    return
                   }
                   //console.log();
                 }
