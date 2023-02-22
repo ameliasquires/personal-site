@@ -10,6 +10,7 @@ app.get("/display", (req, res) => {
   res.sendFile("html/display.html",{'root': './'});
 });
 app.use("/src", express.static("src",{'root': './'}));
+app.use("/badges", express.static("badges",{'root': './'}));
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });

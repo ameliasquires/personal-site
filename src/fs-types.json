@@ -1,4 +1,5 @@
 [
   { "identifier": "*", "descriptor": "All Files", "regex": "(.*)" },
+  { "identifier": "*.exe", "descriptor": "Executable Files", "regex": "(.*exe$)" },
   { "identifier": "*.txt", "descriptor": "Text Files", "regex": "(.*txt$)" }
 ]

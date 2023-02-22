@@ -1,4 +1,20 @@
 let util = {
+  context_menu(opt){
+    /*
+      opt = {"menu":[
+        {"name":string,
+        "callback": function}
+        
+      ],!"settings":{
+          x:int,
+          y:int,
+          height:int,
+          width:int
+        }}
+
+      ! is optional 
+    */
+  },
   async alert(inp) {
     let promise = new Promise(async (res, rej) => {
       bu = [];
