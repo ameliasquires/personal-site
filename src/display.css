@@ -1,0 +1,359 @@
+@font-face {
+            font-family: f98;
+            src: url(98.ttf);
+        }
+
+        * {
+            margin: 0;
+            font-family: f98;
+            font-size: 15px;
+            scrollbar-width: none;
+        }
+
+        .window {
+            width: 56%;
+            max-width: inherit;
+            height: 30%;
+            max-height: inherit;
+            background-color: #c3c3c3;
+            position: absolute;
+        }
+
+        .head-border {
+            width: calc(100%);
+            background: linear-gradient(90deg, rgba(1, 0, 129, 1) 0%, rgba(0, 128, 128, 1) 100%);
+            height: 25px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: grab;
+        }
+
+        .close-button {
+            width: calc(25px - 7px);
+            background-color: #c3c3c3;
+            height: calc(100% - 7px);
+            position: absolute;
+            top: 3.5px;
+            right: 3.5px;
+            cursor: initial;
+
+        }
+
+        #root {
+            position: relative;
+            background-color: cornsilk;
+            background-image: url("img/wallpaper.jpg");
+            background-repeat: no-repeat;
+            background-origin: content-box;
+            background-attachment: fixed;
+            background-position: center center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            width: 90%;
+            height: 90%;
+            margin-left: 5%;
+            margin-top: 2.5%;
+            margin-bottom: 2.5%;
+            overflow: hidden;
+
+        }
+
+        .resize-n {
+            position: absolute;
+            top: -1px;
+            width: 100%;
+            height: 7px;
+            background-color: rgba(0, 0, 0, 0);
+            cursor: ns-resize;
+        }
+
+        .resize-s {
+            position: absolute;
+            bottom: -1px;
+            width: 100%;
+            height: 7px;
+            background-color: rgba(0, 0, 0, 0);
+            cursor: ns-resize;
+        }
+
+        table {
+            display: table;
+        }
+
+        table tr {
+            display: table-cell;
+        }
+
+        table tr td {
+            display: block;
+        }
+
+        .resize-e {
+            position: absolute;
+            right: -3px;
+            width: 7px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            cursor: ew-resize;
+        }
+
+        .resize-w {
+            position: absolute;
+            left: -3px;
+            width: 7px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            cursor: ew-resize;
+
+        }
+
+        .resize-ne {
+            position: absolute;
+            right: -3px;
+            top: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: ne-resize;
+
+        }
+
+        .resize-es {
+            position: absolute;
+            right: -3px;
+            bottom: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: se-resize;
+
+        }
+
+        .resize-sw {
+            position: absolute;
+            left: -3px;
+            bottom: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: sw-resize;
+
+        }
+
+        .resize-nw {
+            position: absolute;
+            left: -3px;
+            top: -3px;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(255, 0, 0, 0);
+            cursor: nw-resize;
+
+        }
+
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar {
+            width: 10px;
+            height: calc(100% - 25px);
+            background-color: #aaaaaa;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .scrollbar-point {
+            width: 100%;
+            max-height: 100%;
+            background-color: #999999;
+            position: absolute;
+            top: 0;
+            outline: 2px outset;
+            outline-offset: -2px;
+            cursor: grab;
+        }
+
+        #bar {
+            width: 100%;
+            height: 30px;
+            background-color: #c3c3c3;
+            position: absolute;
+            bottom: 0;
+            display: inline-block;
+            left: 0;
+        }
+
+        .bar-item {
+            height: 80%;
+            background-color: #c3c3c3;
+            width: fit-content;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-style: outset;
+            cursor: grab;
+            user-select: none;
+            display: block;
+            position: absolute;
+            top: 0;
+        }
+
+        #bar-items {
+            height: 100%;
+            width: 100%;
+            position: relative;
+            display: block;
+        }
+
+        #bar-children {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+
+        }
+
+        #bar-menu {
+            display: flex;
+            position: relative;
+            height: calc(100% - 5px);
+            font-size: large;
+            padding: 3px;
+            user-select: none;
+            padding-left: 10px;
+            padding-right: 10px;
+            outline: 2px outset;
+            outline-offset: -2px;
+            cursor: pointer;
+
+
+        }
+
+        #bar-menu-root {
+            padding-top: 2px;
+            height: 280px;
+            width: 180px;
+            background-color: #c7c7c7;
+            position: absolute;
+            border-style: outset;
+            bottom: 30px;
+            display: none;
+        }
+
+        .bar-menu-item {
+            padding-left: 5px;
+            width: 100%;
+            height: 25px;
+            display: flex;
+            font-size: 14px;
+            font-weight: bold;
+            padding-top: 1px;
+            user-select: none;
+        }
+
+        .bar-menu-image {
+            height: 18px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .bar-menu-text {
+            position: absolute;
+            left: 35px;
+            padding-top: 2px;
+        }
+
+        .bar-menu-separator {
+            width: calc(100% - 20px);
+            height: 3px;
+            margin-bottom: 5px;
+            background-color: #a1a1a1;
+            border-style: none none solid none;
+            border-color: #dddddd;
+            border-width: 2px;
+            left: 10px;
+            position: relative;
+        }
+
+        .bar-menu-more {
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-left: 7px solid #000000;
+            border-bottom: 5px solid transparent;
+            position: absolute;
+            right: 5px;
+            margin-top: 6px;
+
+        }
+
+        .bar-menu-more-root {
+            display: none;
+            width: 120px;
+            height: fit-content;
+            border-style: outset outset outset none;
+            right: -123px;
+            position: absolute;
+            padding-top: 3px;
+            background-color: #c7c7c7;
+            overflow: hidden;
+        }
+
+        .fd-bottom {
+            width: 100%;
+            height: 56px;
+            background-color: #b1b1b1;
+            position: absolute;
+            bottom: 0;
+            overflow: hidden;
+            white-space: nowrap;
+          align-self: flex-end;
+        }
+
+        textarea {
+            resize: none;
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+            outline: none;
+            overflow: scroll;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+        }
+
+        input {
+            background-color: rgba(0, 0, 0, 0);
+            text-shadow: 0 0 10px white;
+            border: none;
+            color: inherit;
+        }
+
+        input {
+            border: 0;
+            outline: 0;
+        }
+
+        input:focus {
+            outline: none !important;
+        }
+
+        input:hover {
+            cursor: text;
+        }
+
+        button {
+            border-radius: 0px;
+            background-color: #c1c1c1;
+        }
+
+        select,
+        option {
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+            border-radius: 0;
+        }

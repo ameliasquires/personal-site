@@ -75,7 +75,7 @@ let util = {
                 ttu = true
                 t_ret += rec_bar_fun(f.content,target_full,target_ind+1,padding+5,patt+"/"+f.name)
               }
-              ret += "<div id='"+patt + "/"+ f.name + "' style='white-space:nowrap;width:100%;user-select:none;"+(ttu&&target_ind==target_full.length - 1?"background-color:rgba(0,0,0,.25);":"")+";height:20px;margin-left:"+padding+"'>"+(ttu?"v ":"> ")+f.name+"</div>" + t_ret
+              ret += "<div id='"+patt + "/"+ f.name + "/' style='white-space:nowrap;width:100%;user-select:none;"+(ttu&&target_ind==target_full.length - 1?"background-color:rgba(0,0,0,.25);":"")+";height:20px;margin-left:"+padding+"'>"+(ttu?"v ":"> ")+f.name+"</div>" + t_ret
                 //console.log(false,f.name)
                 
             }
@@ -100,7 +100,7 @@ let util = {
             }
           }
         }*/
-        
+        console.log(inp.path)
         files+= "<div id='"+i+"-fs-left-bar' onscroll='return false;' style='overflow:hidden;height:100%;width:"+l_b_width+"'>"+bar_opt+"</div>"
         files += "<div id='"+i+"-left-pane-resize-e' class='resize-e' style='position:relative;right:1;background-color:#aaaaaa;height:100%;'></div>"
         files += "<div id='"+i+"-fs-inner-cont' style='flex:1;align-content: flex-start;display:flex;flex-direction:row;flex-wrap:wrap'>"
@@ -161,7 +161,7 @@ let util = {
           "'</select>" +
           "<button id='" +
           i +
-          "-content-button-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>cancel</button></div>" +
+          "-content-button2-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>cancel</button></div>" +
           "";
         document.getElementById(i + "-content-content").innerHTML = files;
         //console.log(tfs)
@@ -171,6 +171,11 @@ let util = {
         }
         document.getElementById(i +"-content-button-sub").onclick = () => {
           res(inp.path+document.getElementById(i +"-fd-bottom-sel").value)
+          document.getElementById(i+"-root").remove()
+            
+          }
+        document.getElementById(i +"-content-button2-sub").onclick = () => {
+          rej("canceled by user")
           document.getElementById(i+"-root").remove()
             
           }
