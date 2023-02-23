@@ -174,8 +174,9 @@
         }
         let minx = 150;
         let miny = 150;
+      
         function window_create(uid, name, content, options = {}) {
-            let promise = new Promise((res, rej) => {
+            //let promise = new Promise((res, rej) => {
                 let lines = content.split("</br>").length
                 let a = ''
                 let size = (options.width != undefined && options.height != undefined) ? ("width:" + options.width + "px;height:" + options.height + "px;") : ("width:" + Math.max(document.body.clientWidth * .36, minx) + "px;height:" + Math.max(miny, document.body.clientHeight * .30) + "px;");
@@ -206,7 +207,10 @@
                     a += "<div id='" + uid + "-resize-sw' class='resize-sw'></div>"
                     a += "<div id='" + uid + "-resize-es' class='resize-es'></div>"
                 }
-                document.getElementById("root").innerHTML += a
+               a += "</div>"
+                console.log(a)
+                //document.getElementById("root").append(a)
+                appendHtml(document.getElementById("root"),a)
                 if (options.scroll != false && options.scroll != "false") {
                     //a += "<div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
                     //a += "</div>"
@@ -216,15 +220,18 @@
 
                 //console.log(document.getElementById(uid + "-content-scrollbar-point"))
                 refresh_windows()
-                res()
-            })
-            return promise
+                //res()
+            //})
+            //return promise
         }
         function refresh_windows() {
             load_bar()
             
-            let elems = document.getElementsByClassName("window")
+            //let elems = document.getElementsByClassName("window")
+          let elems = document.getElementById("root").children
             for (let i = 0; i != elems.length; i++) {
+                if(elems.item(i).className!='window')
+                  continue
                 let uid = elems.item(i).id.split("-")[0]
               if(null!=procs[uid] && null!=procs[uid].refresh)
                                     procs[uid].refresh()
@@ -243,6 +250,7 @@
                         }
                     }
                 } catch (e) { }
+              //continue
                 //let elem = elems.item(i).children[0]
                 let elec = elems.item(i).children
                 let elem
@@ -257,6 +265,8 @@
                                 elem.children.item(iii).onmousedown = ((ev) => {
                                     //console.log(elems.item(i))
                                     //onkill.apply(this)
+                                    if(null!=procs[uid] && null!=procs[uid].remove)
+                                      procs[uid].remove()
                                     delete procs[elem.id.split("-")[0]]
                                     ii.remove()
                                     load_bar()
@@ -564,7 +574,7 @@
             load_bar()
         }
 
-
+        
         let fs_types;
         async function main() {
             fs = await req('src/fs.json')
@@ -579,6 +589,7 @@
             })
             load_bar()
         }
+      
 
     </script>
 </head>
@@ -655,7 +666,7 @@
                     src="./src/img/log-off.png">
                 <div class="bar-menu-text">Log Off...</div>
             </div>
-            <div class="bar-menu-item" id="bar-menu-run"><img class="bar-menu-image" style="height:24px"
+            <div class="bar-menu-item" id="bar-menu-run" ><img class="bar-menu-image" style="height:24px"
                     src="./src/img/shut-down.png">
                 <div class="bar-menu-text">Shut Down...</div>
             </div>

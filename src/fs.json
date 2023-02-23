@@ -40,6 +40,7 @@
         "dir": false,
         "content": "window Notepad <textarea onkeypress='auto_resize(this)' style='width:100%;overflow:visible;display:block;'></textarea>\nmeta icon src/img/notepad.png"
       },
+
       {
         "name": "cmd.exe",
         "perms": { "r": true },

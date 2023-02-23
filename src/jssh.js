@@ -99,8 +99,8 @@ class jssh {
         return this.add_file(fs, path, dir);
       }
     }
-    document.getElementById(this.history).innerHTML +=
-      "jssh: " + path.join("/") + ": directory not found</br>";
+    this.stdout(
+      "jssh: " + path.join("/") + ": directory not found</br>");
   }
   write_file(fs, path, content, append) {
     if (path.length == 1) {
@@ -180,7 +180,8 @@ class jssh {
                     }
                   }
                 }
-                console.log(settings);
+                //console.log(settings);
+                //console.log(id,stripped[1],t.join(" ").replace(/#_ID/g, id))
                 //let id = document.getElementsByClassName("window").length;
                 //console.log(id);
                 this.window_create(

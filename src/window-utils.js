@@ -1,10 +1,10 @@
 let util = {
-  context_menu(opt){
+  context_menu(target,opt){
     /*
       opt = {"menu":[
         {"name":string,
         "callback": function}
-        
+        , ...
       ],!"settings":{
           x:int,
           y:int,
@@ -14,15 +14,38 @@ let util = {
 
       ! is optional 
     */
+    (()=>{
+    target.oncontextmenu = ((ev)=>{
+      console.log(ev)
+      try{document.getElementById(target.id+"-menu").remove()}catch(e){}
+      let aa = ""
+      
+      for(let op of opt.menu){
+        aa+=`<div id='${target.id}-menu-${opt.menu.indexOf(op)}'>${op.name}</div>`
+      }
+      target.innerHTML += "<div id='"+target.id+"-menu' style='position:fixed;top:"+ev.clientY+";left:"+ev.clientX+"px;background-color:red'>"+aa+"</div>"
+      for(let op of opt.menu){
+        document.getElementById(`${target.id}-menu-${opt.menu.indexOf(op)}`).onclick = (()=>{
+          op.callback()
+        })
+      }
+      return false
+    })
+      })()
   },
   scrollbar(uid,minor_uid,root,target){
+    (()=>{
+      
     //root is the base of the window, only used for measuring
     //--
     //target is where the scrollbar will be placed, this element should be
     //larger than the root with scrollable overflow
     let scrolling = false
+      console.log(uid,minor_uid)
+      //try{document.getElementById(uid + "-" + minor_uid + "-content-scrollbar").remove()}catch(e){console.log(e)}
     if(undefined==procs[uid])
       procs[uid] = {}
+      console.log("'" + uid + "-" + minor_uid + "-content-scrollbar'")
     target.innerHTML += "<div id='" + uid + "-" + minor_uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-" + minor_uid + "-content-scrollbar-point' class='scrollbar-point'></div></div>"
     let thi_point = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar-point")
     let thi_base = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar")
@@ -41,7 +64,7 @@ let util = {
         thi_point.style.top =  thi_base.clientHeight-thi_point.clientHeight
       }
     }
-    console.log(root)
+    //console.log(root)
     root.onscroll = () => {
       
         if (false==scrolling) {
@@ -57,6 +80,7 @@ let util = {
       thi_point.style.cursor = 'grabbing'
       py = ev.clientY
       document.body.style.userSelect = "none"
+      
       document.onmouseup = (()=>{
         document.body.style.cursor = ''
         thi_point.style.cursor = 'grab'
@@ -67,7 +91,7 @@ let util = {
       document.onmousemove = ((evm)=>{
         scrolling = true
         let z = (thi_point.offsetTop - (py - evm.clientY))
-        console.log(z,thi_base.clientHeight - thi_point.clientHeight)
+        //console.log(z,thi_base.clientHeight - thi_point.clientHeight)
         if(z >= 0 && z < thi_base.clientHeight - thi_point.clientHeight){
           thi_point.style.top = z
           root.scrollTop = ((z / (thi_base.clientHeight - thi_point.clientHeight)) * (root.scrollHeight - thi_base.clientHeight + 24))
@@ -83,6 +107,7 @@ let util = {
       })
     })
     procs[uid].refresh()
+      })()
   },
   async alert(inp) {
     let promise = new Promise(async (res, rej) => {
@@ -104,8 +129,9 @@ let util = {
           b +
           "</button>";
       }
-
-      await window_create(
+      let r_x = inp.x | 25
+      let r_y = inp.y | 25
+       window_create(
         i,
         inp.title == undefined ? "Alert" : inp.title,
         `<table><tr><td style='padding: 5px;'><img src='./src/img/${
@@ -117,7 +143,7 @@ let util = {
       }</td>
         <td style='padding: 5px;' >${buttons}</td>
         </tr></table>`,
-        { width: 220, height: 110, resize: false }
+        { width: 220, height: 110, resize: false,left:r_x,top:r_y }
       );
       for (let b of bu) {
         document.getElementById(i + "-content-button-" + b).onclick = () => {
@@ -128,17 +154,20 @@ let util = {
     return promise;
   },
   async fd(inp) {
+    let i = document.getElementsByClassName("window").length;
     let promise = new Promise(async (res, rej) => {
-      let i = document.getElementsByClassName("window").length;
       
+      if(undefined==procs[i])
+        procs[i] = {}
       let sel = [];
       let sel_t_n = 0
       let sel_t = fs_types[sel_t_n]
       l_b_width = 80
-      await window_create(i, "fs", "",{scroll:false});
+       window_create(i, "fs", "",{scroll:false});
+      let ll = await new jssh(fs, "/", i, "null", "null", window_create);
       async function load() {
         let fil = []
-        let ll = await new jssh(fs, "/", i, "null", "null", window_create);
+        
         let tfs = ll.set_wd(ll.clean_path(inp.path));
         //console.log(sel_t)
         let files = "";
@@ -252,12 +281,19 @@ let util = {
         document.getElementById(i + "-content-content").innerHTML = files;
         //console.log(tfs)
         //util.scrollbar(document.getElementById(i+"-fs-inner-cont"))
+        procs[i].load_listeners = () => {
+          
+        
         let ele = document.getElementById(i+"-fs-inner-cont")
         let ele_root = document.getElementById(i+"-content-content")
         util.scrollbar(i,'root-bar',ele_root.parentElement,ele)
-        document.getElementById(i+"-fs-inner-cont").oncontextmenu = (ev) => {
-          return false
-        }
+        util.context_menu(ele,{menu:[
+          {name:'new file',callback:()=>{console.log("copy")}},
+          {name:'new directory',callback:()=>{ll.add_file(ll.fs,['untitled'],true);load()}},
+        ]})
+        //document.getElementById(i+"-fs-inner-cont").oncontextmenu = (ev) => {
+        //  return false
+        //}
         document.getElementById(i +"-content-button-sub").onclick = () => {
           res(inp.path+document.getElementById(i +"-fd-bottom-sel").value)
           document.getElementById(i+"-root").remove()
@@ -335,6 +371,23 @@ let util = {
                     if (sel.includes(f.name)) {
                       sel.splice(sel.indexOf(f.name), 1);
                     } else sel.push(f.name);
+                  } else if (ev.shiftKey) {
+                    let tem = false
+                    for (let ff of fil) {
+                      //console.log(ff.name,sel[0])
+                      if(ff==f||ff.name==sel[0]){
+                        //console.log("uwu")
+                        if(tem){
+                          sel.push(ff.name)
+                          break
+                        }
+                        else
+                          tem = true
+                      }
+                      if(tem){
+                        sel.push(ff.name)
+                      }
+                    }
                   } else sel = [f.name];
                   //sel = [f.name];
                   document.getElementById(i + "-fd-bottom-sel").value =
@@ -361,7 +414,11 @@ let util = {
           load()
         };
       }
+        procs[i].load_listeners()
+      }
+      
       load();
+      
     });
     return promise;
   },
