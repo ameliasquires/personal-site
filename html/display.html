@@ -351,6 +351,8 @@
                                     }
                                 //
                                 //if (sel == 'resize-s' || sel == 'resize-n' || ) {
+                                if(null!=procs[uid] && null!=procs[uid].refresh)
+                                    procs[uid].refresh()
                                 for (let iii = 0; iii != elem.parentElement.parentElement.parentElement.children.length; iii++) {
                                     //console.log(elem.parentElement.parentElement.parentElement.children.item(iii).className)
                                     if (elem.parentElement.parentElement.parentElement.children.item(iii).className == "content-root") {

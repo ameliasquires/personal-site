@@ -15,6 +15,70 @@ let util = {
       ! is optional 
     */
   },
+  scrollbar(uid,minor_uid,root,target){
+    //root is the base of the window, only used for measuring
+    //--
+    //target is where the scrollbar will be placed, this element should be
+    //larger than the root with scrollable overflow
+    let scrolling = false
+    if(!procs[uid])
+      procs[uid] = {}
+    target.innerHTML += "<div id='" + uid + "-" + minor_uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-" + minor_uid + "-content-scrollbar-point' class='scrollbar-point'></div></div>"
+    let thi_point = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar-point")
+    let thi_base = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar")
+    procs[uid].refresh = ()=>{
+      console.log(root.clientHeight / (target.clientHeight / root.clientHeight) / root.clientHeight)
+      thi_point.style.display = "block"
+      thi_base.style.display = "block"
+      thi_point.style.height = root.clientHeight / (target.clientHeight / root.clientHeight)
+      if(root.clientHeight / (target.clientHeight / root.clientHeight) / root.clientHeight >= 1){
+        thi_point.style.display = "none"
+        thi_base.style.display = "none"
+      }
+    }
+    console.log(root)
+    root.onscroll = () => {
+      
+        if (false==scrolling) {
+          //console.log("uwu")
+          let aaaa = (root.clientHeight - thi_point.clientHeight)
+          let scro = (root.scrollTop / (root.scrollHeight - root.clientHeight))
+          //console.log(aaaa, scro)
+          thi_point.style.top = scro * aaaa
+      }
+    }
+    thi_point.onmousedown = ((ev)=>{
+      document.body.style.cursor = 'grabbing'
+      thi_point.style.cursor = 'grabbing'
+      py = ev.clientY
+      document.body.style.userSelect = "none"
+      document.onmouseup = (()=>{
+        document.body.style.cursor = ''
+        thi_point.style.cursor = 'grab'
+        document.onmousemove = null
+        document.onmouseup = null
+        scrolling = false
+      })
+      document.onmousemove = ((evm)=>{
+        scrolling = true
+        let z = (thi_point.offsetTop - (py - evm.clientY))
+        console.log(z,thi_base.clientHeight - thi_point.clientHeight)
+        if(z >= 0 && z < thi_base.clientHeight - thi_point.clientHeight){
+          thi_point.style.top = z
+          root.scrollTop = ((z / (thi_base.clientHeight - thi_point.clientHeight)) * (root.scrollHeight - thi_base.clientHeight + 24))
+        } else {
+          if(z < thi_base.clientHeight - thi_point.clientHeight){
+            thi_point.style.top = 0
+            //root.scrollTop = 
+          } else {
+            thi_point.style.top = thi_base.clientHeight - thi_point.clientHeight
+          }
+        }
+        py = (evm.clientY)
+      })
+    })
+    procs[uid].refresh()
+  },
   async alert(inp) {
     let promise = new Promise(async (res, rej) => {
       bu = [];
@@ -61,11 +125,12 @@ let util = {
   async fd(inp) {
     let promise = new Promise(async (res, rej) => {
       let i = document.getElementsByClassName("window").length;
+      
       let sel = [];
       let sel_t_n = 0
       let sel_t = fs_types[sel_t_n]
       l_b_width = 80
-      await window_create(i, "fs", "");
+      await window_create(i, "fs", "",{scroll:false});
       async function load() {
         let fil = []
         let ll = await new jssh(fs, "/", i, "null", "null", window_create);
@@ -182,6 +247,9 @@ let util = {
         document.getElementById(i + "-content-content").innerHTML = files;
         //console.log(tfs)
         //util.scrollbar(document.getElementById(i+"-fs-inner-cont"))
+        let ele = document.getElementById(i+"-fs-inner-cont")
+        let ele_root = document.getElementById(i+"-content-content")
+        util.scrollbar(i,'root-bar',ele_root.parentElement,ele)
         document.getElementById(i+"-fs-inner-cont").oncontextmenu = (ev) => {
           return false
         }
