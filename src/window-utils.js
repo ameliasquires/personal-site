@@ -21,19 +21,24 @@ let util = {
     //target is where the scrollbar will be placed, this element should be
     //larger than the root with scrollable overflow
     let scrolling = false
-    if(!procs[uid])
+    if(undefined==procs[uid])
       procs[uid] = {}
     target.innerHTML += "<div id='" + uid + "-" + minor_uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-" + minor_uid + "-content-scrollbar-point' class='scrollbar-point'></div></div>"
     let thi_point = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar-point")
     let thi_base = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar")
     procs[uid].refresh = ()=>{
-      console.log(root.clientHeight / (target.clientHeight / root.clientHeight) / root.clientHeight)
+      
+      //console.log(root.clientHeight / (target.clientHeight / root.clientHeight) / root.clientHeight)
       thi_point.style.display = "block"
       thi_base.style.display = "block"
       thi_point.style.height = root.clientHeight / (target.clientHeight / root.clientHeight)
       if(root.clientHeight / (target.clientHeight / root.clientHeight) / root.clientHeight >= 1){
         thi_point.style.display = "none"
         thi_base.style.display = "none"
+      }
+
+      if(thi_base.clientHeight<thi_point.offsetTop+thi_point.clientHeight){
+        thi_point.style.top =  thi_base.clientHeight-thi_point.clientHeight
       }
     }
     console.log(root)

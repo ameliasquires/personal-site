@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script rel="preconnect" src="./src/jssh.js" crossorigin></script>
     <script rel="preconnect" src="./src/window-utils.js" crossorigin></script>
+    <script rel="preconnect" src="./src/common.js" crossorigin></script>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Circular&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>~nya</title>
@@ -197,10 +198,7 @@
                 a += "<div id='" + uid + "-content-root' class='content-root' style='overflow:scroll;height:calc(100% - 26px);width:100%'>"
 
                 a += "<div id='" + uid + "-content-content' class='content-content'>" + content + "</div>"
-                if (options.scroll != false && options.scroll != "false") {
-                    a += "<div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
-                    a += "</div>"
-                }
+                
                 a += "</div>"
                 if (options.resize != false && options.resize != "false") {
                     a += "<div id='" + uid + "-resize-ne' class='resize-ne'></div>"
@@ -209,6 +207,11 @@
                     a += "<div id='" + uid + "-resize-es' class='resize-es'></div>"
                 }
                 document.getElementById("root").innerHTML += a
+                if (options.scroll != false && options.scroll != "false") {
+                    //a += "<div id='" + uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-content-scrollbar-point' class='scrollbar-point'></div>"
+                    //a += "</div>"
+                  util.scrollbar(uid,'content-scroll',document.getElementById(uid + "-content-root"),document.getElementById(uid + "-content-content"))
+                }
                 //console.log(document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight))
 
                 //console.log(document.getElementById(uid + "-content-scrollbar-point"))
@@ -219,9 +222,12 @@
         }
         function refresh_windows() {
             load_bar()
+            
             let elems = document.getElementsByClassName("window")
             for (let i = 0; i != elems.length; i++) {
                 let uid = elems.item(i).id.split("-")[0]
+              if(null!=procs[uid] && null!=procs[uid].refresh)
+                                    procs[uid].refresh()
                 try {
                     document.getElementById(uid + "-content-scrollbar-point").style.height = (document.getElementById(uid + "-content-root").clientHeight / (document.getElementById(uid + "-content-content").clientHeight / document.getElementById(uid + "-content-root").clientHeight)) + "px"
 
@@ -353,6 +359,7 @@
                                 //if (sel == 'resize-s' || sel == 'resize-n' || ) {
                                 if(null!=procs[uid] && null!=procs[uid].refresh)
                                     procs[uid].refresh()
+                                /*
                                 for (let iii = 0; iii != elem.parentElement.parentElement.parentElement.children.length; iii++) {
                                     //console.log(elem.parentElement.parentElement.parentElement.children.item(iii).className)
                                     if (elem.parentElement.parentElement.parentElement.children.item(iii).className == "content-root") {
@@ -387,7 +394,7 @@
                                         }
                                         break
                                     }
-                                }
+                                }*/
                                 //}
                                 py = (evm.clientY)
                                 px = (evm.clientX)
@@ -396,6 +403,7 @@
                         })
                     }
                 })
+              /*
                 let temp
                 let scrolling = false
                 for (let ii = 0; ii != elec.length; ii++) {
@@ -415,6 +423,8 @@
                                         for (let iiiii = 0; iiiii != elec.item(ii).children.length; iiiii++) {
 
                                             if (elec.item(ii).children.item(iiiii).className == 'content-content') {
+                                              
+                                              
                                                 //console.log(elec.item(ii).children.item(iiiii), "hi")
                                                 con = elec.item(ii).children.item(iiiii)
                                                 elec.item(ii).onscroll = ((ev) => {
@@ -477,7 +487,7 @@
                 if (elem.className == 'scrollbar-point') {
 
 
-                }
+                }*/
 
 
 
@@ -504,9 +514,15 @@
                     for (let ii = 0; ii != a_p_c.length; ii++) {
                         if (a_p_c.item(ii).id == id + "-history") {
                             let his = a_p_c.item(ii).id
-                            if (procs[id] == undefined)
-                                procs[id] = new jssh(fs, "/", id, inp, his, window_create)
-                            procs[id].ex()
+                            if(procs[id] == undefined)
+                              procs[id] = {}
+                            if (procs[id].comm == undefined){
+                                
+                                procs[id].comm = new jssh(fs, "/", id, inp, his, window_create)
+                            }
+                          //console.log(procs)
+                          //return
+                            procs[id].comm.ex()
                             refresh_windows()
                             a.parentElement.parentElement.scrollTop = a.parentElement.parentElement.scrollHeight
                             break
