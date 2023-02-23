@@ -174,9 +174,7 @@ let util = {
         files += "<div id='"+i+"-fs-cont-root' style='width:100%;height:100%;display:inline-flex;flex-direction:row;flex-wrap:wrap'>"
         //left bar
         //console.log(inp.path)
-        let ppp = inp.path.split("/").filter(function (e) {
-        return e !== "";
-      })
+        let ppp = inp.path.split("/").filter(rem_emp)
 
         
         function rec_bar_fun(cdir,target_full,target_ind,padding,patt){
@@ -237,7 +235,7 @@ let util = {
               i +
               "-id-name-" +
               f.name +
-              "'style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/notepad.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
+              "'style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:42px;width:42px;' src='src/img/doc.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
               f.name +
               "</div></div>";
               fil.push(f)
@@ -286,10 +284,11 @@ let util = {
         
         let ele = document.getElementById(i+"-fs-inner-cont")
         let ele_root = document.getElementById(i+"-content-content")
+        console.log(inp.path.split("/").filter(rem_emp))
         util.scrollbar(i,'root-bar',ele_root.parentElement,ele)
         util.context_menu(ele,{menu:[
-          {name:'new file',callback:()=>{console.log("copy")}},
-          {name:'new directory',callback:()=>{ll.add_file(ll.fs,['untitled'],true);load()}},
+          {name:'new file',callback:()=>{ll.add_file(ll.fs,[...inp.path.split("/").filter(rem_emp),'untitled'],false);load()}},
+          {name:'new directory',callback:()=>{ll.add_file(ll.fs,[...inp.path.split("/").filter(rem_emp),'untitled'],true);load()}},
         ]})
         //document.getElementById(i+"-fs-inner-cont").oncontextmenu = (ev) => {
         //  return false
@@ -363,8 +362,8 @@ let util = {
               dou = false;
             } else {
               dou = true;
-
-              tt.style.backgroundColor = "blue";
+              tt.style.boxShadow = "0 0 0 1px rgba(0,0,244,0.4) inset"
+              tt.style.backgroundColor = "rgba(0,0,244,0.2)";
               setTimeout(() => {
                 if (dou) {
                   if (ev.ctrlKey) {
@@ -373,9 +372,11 @@ let util = {
                     } else sel.push(f.name);
                   } else if (ev.shiftKey) {
                     let tem = false
+                    let osel = sel
+                    sel = []
                     for (let ff of fil) {
                       //console.log(ff.name,sel[0])
-                      if(ff==f||ff.name==sel[0]){
+                      if(ff==f||ff.name==osel[0]){
                         //console.log("uwu")
                         if(tem){
                           sel.push(ff.name)
@@ -397,8 +398,11 @@ let util = {
                       i + "-id-name-" + aa.name
                     );
                     if (sel.includes(aa.name)) {
-                      ttt.style.backgroundColor = "blue";
+                      ttt.style.backgroundColor = "rgba(0,0,244,0.2)";
+                      ttt.style.boxShadow = "0 0 0 1px rgba(0,0,244,0.4) inset"
+
                     } else {
+                      ttt.style.boxShadow = ""
                       ttt.style.backgroundColor = "";
                     }
                   }

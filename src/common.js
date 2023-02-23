@@ -9,3 +9,6 @@ function appendHtml(el, str) {
     el.appendChild(div.children[0]);
   }
 }
+
+
+const rem_emp = function (e) {return e !== "";};

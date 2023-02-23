@@ -84,14 +84,20 @@ class jssh {
   }
   add_file(fs, path, dir) {
     //console.log(fs, path);
-    if (path.length == 1)
+    if (path.length == 1){
+      for(let o of fs){
+        if(o.name == path[0]){
+          path[0] += '-1'
+          return this.add_file(fs,path,dir)
+        }
+      }
       return fs.push({
         name: path[0],
         perms: { r: true },
         dir: dir,
         content: dir ? [] : "",
       });
-
+    }
     for (let f in fs) {
       if (fs[f].name == path[0] && fs[f].dir) {
         fs = fs[f].content;
@@ -254,9 +260,7 @@ class jssh {
               : this.working_dir + "/" + stripped[1]
           )
             .split("/")
-            .filter(function (e) {
-              return e !== "";
-            }),
+            .filter(rem_emp),
           false
         );
 
@@ -270,9 +274,7 @@ class jssh {
               : this.working_dir + "/" + stripped[1]
           )
             .split("/")
-            .filter(function (e) {
-              return e !== "";
-            })
+            .filter(rem_emp)
         );
         break;
       case "mkdir":
@@ -284,9 +286,7 @@ class jssh {
               : this.working_dir + "/" + stripped[1]
           )
             .split("/")
-            .filter(function (e) {
-              return e !== "";
-            }),
+            .filter(rem_emp),
           true
         );
         break;
@@ -469,9 +469,7 @@ class jssh {
         .trim();
       pp = this.clean_path(pp[0] == "/" ? pp : this.working_dir + "/" + pp);
 
-      pp = pp.split("/").filter(function (e) {
-        return e !== "";
-      });
+      pp = pp.split("/").filter(rem_emp);
       this.write_file(this.fs, pp, history_write.trim(), redir_app);
     } else {
       document.getElementById(this.history).innerHTML += history_write;
