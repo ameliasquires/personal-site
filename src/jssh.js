@@ -80,6 +80,8 @@ class jssh {
   stdout(line) {
     if (this.history != "null" && this.input != "null")
       document.getElementById(this.history).innerHTML += line;
+    else 
+      console.log("[no terminal; stdout redirected here]:"+line)
     return;
   }
   add_file(fs, path, dir) {
@@ -133,8 +135,8 @@ class jssh {
         return this.write_file(fs, path, content, append);
       }
     }
-    document.getElementById(this.history).innerHTML +=
-      "jssh: " + path.join("/") + ": file not found</br>";
+    this.stdout (
+      "jssh: " + path.join("/") + ": file not found</br>");
   }
   rem_file(fs, path) {
     //console.log(fs, path);
@@ -156,8 +158,8 @@ class jssh {
         return this.rem_file(fs, path);
       }
     }
-    document.getElementById(this.history).innerHTML +=
-      "jssh: " + path.join("/") + ": file or directory not found</br>";
+    this.stdout(
+      "jssh: " + path.join("/") + ": file or directory not found</br>");
   }
   ex_file(path, args = []) {
     let id = document.getElementsByClassName("window").length;

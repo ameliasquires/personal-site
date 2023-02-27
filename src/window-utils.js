@@ -1,5 +1,5 @@
 let util = {
-  context_menu(target,opt){
+  context_menu(target,opt,other_targets=[]){
     /*
       opt = {"menu":[
         {"name":string,
@@ -14,24 +14,64 @@ let util = {
 
       ! is optional 
     */
-    (()=>{
+    function mm(){
     target.oncontextmenu = ((ev)=>{
-      console.log(ev)
-      try{document.getElementById(target.id+"-menu").remove()}catch(e){}
+      if(ev.target!=target&&other_targets.includes(ev.target)==false)
+        return
+      function clean(){
+        try{document.getElementById(target.id+"-menu").remove()}catch(e){}
+        let nu = document.getElementsByClassName('context-menu-root')
+        for(let i = nu.length -1;i>=0;i--){
+          nu.item(i).remove()
+        }
+        
+      }
+      if(!(window.contextm == null || window.contextm.tokill == null)){
+        for(let i in window.contextm.tokill){
+          window.contextm.tokill[i]()
+          
+        }
+        window.contextm.tokill = null
+      }
+      document.body.addEventListener("click",function tem(){
+        clean()
+        document.body.removeEventListener("click",tem)
+      })
+      
+      //console.log(ev)
+      clean()
+      //if(window.contextm == null || window.contextm.tokill == null){
+      window.contextm = {}
+      if(opt.on_exit!=null)
+      window.contextm.tokill = [opt.on_exit]
+      //} else {
+
+      //}
       let aa = ""
       
       for(let op of opt.menu){
-        aa+=`<div id='${target.id}-menu-${opt.menu.indexOf(op)}'>${op.name}</div>`
+        if(op=="seper")
+          aa+="<div style='width:100%;height:2px;background-color:#aaaaaa;'></div>"
+        else if(op.allow_if == undefined || op.allow_if())
+          aa+=`<div id='${target.id}-menu-${opt.menu.indexOf(op)}'>${op.name}</div>`
+        else
+          aa+=`<div style='color:a2a2a2' id='${target.id}-menu-${opt.menu.indexOf(op)}'>${op.name}</div>`
       }
-      target.innerHTML += "<div id='"+target.id+"-menu' style='position:fixed;top:"+ev.clientY+";left:"+ev.clientX+"px;background-color:red'>"+aa+"</div>"
+      appendHtml(target,"<div class='context-menu-root' id='"+target.id+"-menu' style='position:fixed;top:"+ev.clientY+";left:"+ev.clientX+"px;'>"+aa+"</div>")
       for(let op of opt.menu){
+        if(op!="seper"&&(op.allow_if == undefined || op.allow_if()))
         document.getElementById(`${target.id}-menu-${opt.menu.indexOf(op)}`).onclick = (()=>{
           op.callback()
         })
       }
       return false
     })
-      })()
+      };
+      mm()
+      return ({append:function append(items){
+        opt.menu.push(items)
+        mm()
+      }})
   },
   scrollbar(uid,minor_uid,root,target){
     (()=>{
@@ -41,12 +81,12 @@ let util = {
     //target is where the scrollbar will be placed, this element should be
     //larger than the root with scrollable overflow
     let scrolling = false
-      console.log(uid,minor_uid)
+      //console.log(uid,minor_uid)
       //try{document.getElementById(uid + "-" + minor_uid + "-content-scrollbar").remove()}catch(e){console.log(e)}
     if(undefined==procs[uid])
       procs[uid] = {}
-      console.log("'" + uid + "-" + minor_uid + "-content-scrollbar'")
-    target.innerHTML += "<div id='" + uid + "-" + minor_uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-" + minor_uid + "-content-scrollbar-point' class='scrollbar-point'></div></div>"
+      //console.log("'" + uid + "-" + minor_uid + "-content-scrollbar'")
+    appendHtml(target,"<div id='" + uid + "-" + minor_uid + "-content-scrollbar' class='scrollbar'><div id='" + uid + "-" + minor_uid + "-content-scrollbar-point' class='scrollbar-point'></div></div>")
     let thi_point = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar-point")
     let thi_base = document.getElementById(uid + "-" + minor_uid + "-content-scrollbar")
     procs[uid].refresh = ()=>{
@@ -166,6 +206,7 @@ let util = {
        window_create(i, "fs", "",{scroll:false});
       let ll = await new jssh(fs, "/", i, "null", "null", window_create);
       async function load() {
+        refresh_windows()
         let fil = []
         
         let tfs = ll.set_wd(ll.clean_path(inp.path));
@@ -213,7 +254,7 @@ let util = {
             }
           }
         }*/
-        console.log(inp.path)
+        //console.log(inp.path)
         files+= "<div id='"+i+"-fs-left-bar' onscroll='return false;' style='overflow:hidden;height:100%;width:"+l_b_width+"'>"+bar_opt+"</div>"
         files += "<div id='"+i+"-left-pane-resize-e' class='resize-e' style='position:relative;right:1;background-color:#aaaaaa;height:100%;'></div>"
         files += "<div id='"+i+"-fs-inner-cont' style='flex:1;align-content: flex-start;display:flex;flex-direction:row;flex-wrap:wrap'>"
@@ -224,7 +265,7 @@ let util = {
               i +
               "-id-name-" +
               f.name +
-              "' style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/folder.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
+              "' style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:48px;width:48px;' src='src/img/folder.png'><div class='file-name' style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
               f.name +
               "</div></div>";
             fil.push(f)
@@ -235,7 +276,7 @@ let util = {
               i +
               "-id-name-" +
               f.name +
-              "'style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:42px;width:42px;' src='src/img/doc.png'><div style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
+              "'style='height:55px;position:relative;width:48px;display:inline-block;padding:10px;'><img style='height:42px;width:42px;' src='src/img/doc.png'><div class='file-name' style='position:absolute;bottom:0;overflow-wrap: break-word; width:inherit;user-select:none;'>" +
               f.name +
               "</div></div>";
               fil.push(f)
@@ -284,12 +325,25 @@ let util = {
         
         let ele = document.getElementById(i+"-fs-inner-cont")
         let ele_root = document.getElementById(i+"-content-content")
-        console.log(inp.path.split("/").filter(rem_emp))
+        //console.log(inp.path.split("/").filter(rem_emp))
         util.scrollbar(i,'root-bar',ele_root.parentElement,ele)
-        util.context_menu(ele,{menu:[
+        let contmenu = util.context_menu(ele,{menu:[
           {name:'new file',callback:()=>{ll.add_file(ll.fs,[...inp.path.split("/").filter(rem_emp),'untitled'],false);load()}},
           {name:'new directory',callback:()=>{ll.add_file(ll.fs,[...inp.path.split("/").filter(rem_emp),'untitled'],true);load()}},
+          "seper",
+          {name:'paste',callback:()=>{
+            let lll = ll.set_wd((inp.path))
+            ll.rem_file(fs,(inp.path + "/" +window.clipboard.path).split("/").filter(rem_emp));
+            ll.add_file(fs,(inp.path + "/" +window.clipboard.path).split("/").filter(rem_emp),window.clipboard.dir);
+            for(let ooo of lll){
+              if(ooo.name==window.clipboard.path)
+                ooo.content=window.clipboard.content;
+            }
+            
+            load()},
+            allow_if:()=>{return(window.clipboard!=null&&window.clipboard.type=="file")}}
         ]})
+        //contmenu.append(['seper'])
         //document.getElementById(i+"-fs-inner-cont").oncontextmenu = (ev) => {
         //  return false
         //}
@@ -332,7 +386,37 @@ let util = {
           }
         for (let f of fil) {
           let tt = document.getElementById(i + "-id-name-" + f.name);
-          //console.log(tt,f)
+          //console.log(tt.firstChild)
+          util.context_menu(tt,{menu:[
+            {name:'rename',callback:()=>{
+              for(let z in tt.children){
+                if(tt.children.item(z).className=="file-name"){
+                  tt.children.item(z).innerHTML = "<form><input style='width:100%;background-color:rgba(255,255,255,0.5)' value='"+tt.children.item(z).innerHTML+"'></input><input type='submit' style='display: none' /></form>"
+                  tt.children.item(z).firstChild.onsubmit = (()=>{fil[fil.indexOf(f)].name=tt.children.item(z).firstChild.firstChild.value;load();return false})
+                  tt.children.item(z).firstChild.firstChild.focus()
+                  break
+                }
+              }
+            }},
+            {name:'copy',callback:()=>{
+              window.clipboard = {type:"file",path:f.name,dir:f.dir,content:f.content}
+                
+            }},
+            {name:'cut',callback:()=>{
+              //console.log(fs,ll.clean_path(inp.path + "/" + f.name).split("/").filter(rem_emp))
+              window.clipboard = {type:"file",path:f.name,dir:f.dir,content:f.content}
+              ll.rem_file(fs,ll.clean_path(inp.path + "/" + f.name).split("/").filter(rem_emp))
+              //console.log(fs)
+              load()
+                
+            }},
+            {name:'del',callback:()=>{
+              ll.rem_file(fs,ll.clean_path(inp.path + "/" + f.name).split("/").filter(rem_emp))
+              //console.log(fs)
+              load()
+                
+            }}
+          ],on_exit:()=>{for(let z in tt.children){tt.children.item(z).innerHTML = fil[fil.indexOf(f)].name} }},Array.from(tt.children))
           let dou = false;
           tt.onclick = (ev) => {
             if (dou) {

@@ -357,3 +357,10 @@
             border: none;
             border-radius: 0;
         }
+
+.context-menu-root{
+    padding:5px 15px 5px 15px;
+    background-color: #bbb;
+    z-index:3;
+    user-select: none;
+}
