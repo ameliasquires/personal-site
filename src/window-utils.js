@@ -255,9 +255,15 @@ let util = {
           }
         }*/
         //console.log(inp.path)
+
+        //top bar, wip maybe
+        //files+= "<div id='"+i+"-fs-top-bar' onscroll='return false;' style='display:inline-block;overflow:hidden;height:56px;width:100%;background-color:#b1b1b1'>"
+        //put buttons and stuff on top
+        //files+= "<u>S</u>earch: <form style='margin-left:22px;display:inline-block;width:40%'><input style='width:100%;display:inline-block;background:white'></input><input type='submit' style='display: none' /></form>"
+        //files+="</div>"
         files+= "<div id='"+i+"-fs-left-bar' onscroll='return false;' style='overflow:hidden;height:100%;width:"+l_b_width+"'>"+bar_opt+"</div>"
         files += "<div id='"+i+"-left-pane-resize-e' class='resize-e' style='position:relative;right:1;background-color:#aaaaaa;height:100%;'></div>"
-        files += "<div id='"+i+"-fs-inner-cont' style='flex:1;align-content: flex-start;display:flex;flex-direction:row;flex-wrap:wrap'>"
+        files += "<div id='"+i+"-fs-inner-cont' style='flex:1;align-content: flex-start;display:flex;flex-direction:row;flex-wrap:wrap;'>"
         for (let f of tfs) {
           if (f.dir) {
             files +=
@@ -297,7 +303,8 @@ let util = {
           i +
           "-fd-bottom' class='fd-bottom' ><div id='" +
           i +
-          "-fd-bar-top'><div style='width:70px;display:inline-block;'> File <u>n</u>ame: </div><div style='background-color:white;display:inline-block;width:40%' ><input style='display:inline-block;text-shadow:none;width:100%;' id='" +
+          "-fd-bottom-bar-top'><div style='width:70px;display:inline-block;'> File <u>n</u>ame: </div><div style='background-color:white;display:inline-block;width:40%' ><div style='background-color:red;position:absolute;margin-top:20px;width:100%'>uwu</br>nyadjkbkcbshvbhfbvjhdfvbdfbvjhdf</div>"
+          +"<input style='display:inline-block;text-shadow:none;width:100%;' id='" +
           i +
           "-fd-bottom-sel' value='" +
           sel.join(",") +
@@ -307,7 +314,7 @@ let util = {
           "-content-button-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>save</button></div>" +
           "<div id='" +
           i +
-          "-fd-bar-bottom'>" +
+          "-fd-bottom-bar-bottom'>" +
           "<div  style='width:70px;display:inline-block;'>File <u>t</u>ype: </div><div style='background-color:white;display:inline-block;width:40%' ><select style='display:inline-block;text-shadow:none;width:100%;' id='" +
           i +
           "-fd-bottom2-sel' >"+
@@ -316,7 +323,8 @@ let util = {
           "<button id='" +
           i +
           "-content-button2-sub' style='width:70px;margin-left:22px;padding-left:15px;padding-right:15px;top:0;text-align: center;display:inline-block;'>cancel</button></div>" +
-          "";
+          "</div></div>";
+        
         document.getElementById(i + "-content-content").innerHTML = files;
         //console.log(tfs)
         //util.scrollbar(document.getElementById(i+"-fs-inner-cont"))
@@ -325,6 +333,18 @@ let util = {
         
         let ele = document.getElementById(i+"-fs-inner-cont")
         let ele_root = document.getElementById(i+"-content-content")
+        //console.log(document.getElementById(i +"-fd-bottom-sel"))
+        document.getElementById(i +"-fd-bottom-sel").onfocus = ((ev)=>{
+          function zzz(ev){
+            let iuwu = document.getElementById(i +"-fd-bottom-sel").value
+            console.log(ll.search(tfs,iuwu))
+            //console.log()
+          }
+          document.body.addEventListener("input",zzz)
+          document.getElementById(i +"-fd-bottom-sel").onblur = ((ev)=>{
+            document.body.removeEventListener("input",zzz)
+          })
+        })
         //console.log(inp.path.split("/").filter(rem_emp))
         util.scrollbar(i,'root-bar',ele_root.parentElement,ele)
         let contmenu = util.context_menu(ele,{menu:[

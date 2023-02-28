@@ -7,6 +7,22 @@ class jssh {
     this.uid = uid;
     this.window_create = window_create;
   }
+  search(fs,target,opt={},path='./'){
+    let match = []
+    for(let f of fs){
+      if(f.dir){
+        let tt = this.search(f.content,target,opt,path+f.name+"/")
+        if(tt!=undefined&&tt.length>0)
+          match.push(...tt)
+      } 
+      if((!opt.exact&&hrx(f.name,"*"+target+"*")||(opt.exact&&hrx(f.name,target)))){
+        match.push(path+f.name)
+      }
+    }
+    //console.log(match.length)
+    //if(match.length!=0)
+    return match;
+  }
   set_wd(dir) {
     //let lwd = fs
     let wd = fs;
