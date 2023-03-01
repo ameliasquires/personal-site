@@ -194,6 +194,7 @@ let util = {
     return promise;
   },
   async fd(inp) {
+    //let filter = ""
     let i = document.getElementsByClassName("window").length;
     let promise = new Promise(async (res, rej) => {
       
@@ -303,8 +304,8 @@ let util = {
           i +
           "-fd-bottom' class='fd-bottom' ><div id='" +
           i +
-          "-fd-bottom-bar-top'><div style='width:70px;display:inline-block;'> File <u>n</u>ame: </div><div style='background-color:white;display:inline-block;width:40%' ><div style='background-color:red;position:absolute;margin-top:20px;width:100%'>uwu</br>nyadjkbkcbshvbhfbvjhdfvbdfbvjhdf</div>"
-          +"<input style='display:inline-block;text-shadow:none;width:100%;' id='" +
+          "-fd-bottom-bar-top'><div style='width:70px;display:inline-block;'> File <u>n</u>ame: </div><div style='background-color:white;display:inline-block;width:40%' >"+ //<div style='background-color:red;position:fixed;margin-top:20px;width:100%'>uwu</br>nyadjkbkcbshvbhfbvjhdfvbdfbvjhdf</div>"
+          "<input style='display:inline-block;text-shadow:none;width:100%;' id='" +
           i +
           "-fd-bottom-sel' value='" +
           sel.join(",") +
@@ -327,6 +328,20 @@ let util = {
         
         document.getElementById(i + "-content-content").innerHTML = files;
         //console.log(tfs)
+        for (let aa of tfs) {
+          let ttt = document.getElementById(
+            i + "-id-name-" + aa.name
+          );
+          //console.log(ttt,aa,sel)
+          if (sel.includes(aa.name)) {
+            ttt.style.backgroundColor = "rgba(0,0,244,0.2)";
+            ttt.style.boxShadow = "0 0 0 1px rgba(0,0,244,0.4) inset"
+
+          } else {
+            ttt.style.boxShadow = ""
+            ttt.style.backgroundColor = "";
+          }
+        }
         //util.scrollbar(document.getElementById(i+"-fs-inner-cont"))
         procs[i].load_listeners = () => {
           
@@ -337,12 +352,47 @@ let util = {
         document.getElementById(i +"-fd-bottom-sel").onfocus = ((ev)=>{
           function zzz(ev){
             let iuwu = document.getElementById(i +"-fd-bottom-sel").value
-            console.log(ll.search(tfs,iuwu))
+            let search = ll.search(tfs,iuwu.toLowerCase(),{},inp.path)
+            if(search.length!=0){
+              let em = document.getElementById(i+"-fd-bottom-sel-sug")
+              if(em==null){
+                appendHtml(document.getElementById(i +"-fd-bottom-sel").parentElement,"<div id='"+i+"-fd-bottom-sel-sug' style='\
+                max-width:200px;max-height:400px;padding:5px;height:fit-content;user-select:none;background-color:#c1c1c1;position:fixed'></div>")
+                em = document.getElementById(i+"-fd-bottom-sel-sug")
+              }
+              let oldsearch = [...search]
+              console.log(oldsearch)
+              for(let s in oldsearch){
+                oldsearch[s] = "<div id='"+i+"-fd-bottom-sel-sug-item-"+s+"' style='display:inline-block'>"+oldsearch[s]+"</div>"
+              }
+              em.style.display="block"
+              em.innerHTML = oldsearch.join("</br>")
+              //console.log(search)
+              for(let s in search){
+                document.getElementById(i+"-fd-bottom-sel-sug-item-"+s).onmousedown = () => {
+                  console.log("click")
+                  let pp = ll.clean_path(search[s]).split("/").filter(rem_emp)
+                  sel = [...pp.splice(pp.length - 1,1)]
+                  inp.path = (pp.length == 0) ? "/" : pp.join("/").trim()
+                  load()
+                }
+              }
+              //console.log(em)
+            } else {
+              try{document.getElementById(i+"-fd-bottom-sel-sug").style.display = "none"}catch(e){}
+              
+            }
             //console.log()
           }
+          zzz()
           document.body.addEventListener("input",zzz)
           document.getElementById(i +"-fd-bottom-sel").onblur = ((ev)=>{
+            console.log("blur")
             document.body.removeEventListener("input",zzz)
+            //setTimeout(()=>{
+              try{document.getElementById(i+"-fd-bottom-sel-sug").style.display = "none"}catch(e){}
+            //},300)
+            
           })
         })
         //console.log(inp.path.split("/").filter(rem_emp))
@@ -438,7 +488,8 @@ let util = {
             }}
           ],on_exit:()=>{for(let z in tt.children){tt.children.item(z).innerHTML = fil[fil.indexOf(f)].name} }},Array.from(tt.children))
           let dou = false;
-          tt.onclick = (ev) => {
+          tt.onmousedown = (ev) => {
+            
             if (dou) {
               //console.log(f, inp);
               if (f.dir) {
@@ -468,6 +519,9 @@ let util = {
               dou = true;
               tt.style.boxShadow = "0 0 0 1px rgba(0,0,244,0.4) inset"
               tt.style.backgroundColor = "rgba(0,0,244,0.2)";
+              tt.onmouseup = (()=>{
+              //console.log(aauwu)
+              clearInterval(aauwu)
               setTimeout(() => {
                 if (dou) {
                   if (ev.ctrlKey) {
@@ -513,7 +567,27 @@ let util = {
                   //load();
                   dou = false;
                 }
-              }, 200);
+              }, 100);
+            })
+            let aauwu = setTimeout(()=>{
+              tt.onmouseup = null;
+              for (let aa of tfs) {
+                let ttt = document.getElementById(
+                  i + "-id-name-" + aa.name
+                );
+                if (sel.includes(aa.name)) {
+                  ttt.style.backgroundColor = "rgba(0,0,244,0.2)";
+                  ttt.style.boxShadow = "0 0 0 1px rgba(0,0,244,0.4) inset"
+
+                } else {
+                  ttt.style.boxShadow = ""
+                  ttt.style.backgroundColor = "";
+                }
+              }
+              //load();
+              dou = false;
+              //the click was long enough to be a drag
+            },200)
             }
           };
         }
