@@ -70,7 +70,7 @@ class jssh {
       });
     for (let i = 0; i != path.length; i++) {
       if (path[i] == "..") {
-        path.splice(i - 1, 2);
+        path.splice(i>0?i-1:0, i>0?2:1);
         return this.clean_path("/" + path.join("/"));
       }
     }
