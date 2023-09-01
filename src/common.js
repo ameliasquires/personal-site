@@ -10,6 +10,18 @@ function appendHtml(el, str) {
   }
 }
 
+function meta_parse(inp){
+  inp = inp.split(" ")
+  inp.shift()
+  inp = inp.join(" ").split(",")
+  //console.log(inp)
+  let r = {};
+  for(let i of inp){
+    i = i.trim()
+    r[i.split(" ")[0]] = i.split(" ")[1];
+  }
+  return r
+}
 
 const rem_emp = function (e) {return e !== "";};
 

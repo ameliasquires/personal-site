@@ -420,7 +420,7 @@ let util = {
         document.getElementById(i +"-content-button-sub").onclick = () => {
           res(inp.path+document.getElementById(i +"-fd-bottom-sel").value)
           document.getElementById(i+"-root").remove()
-            
+          refresh_windows()
           }
         document.getElementById(i +"-content-button2-sub").onclick = () => {
           rej("canceled by user")

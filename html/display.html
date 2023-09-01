@@ -61,29 +61,37 @@
                                     //if (dd[ite].icon)
                                     //icon = `<img class="bar-menu-image" src="${dd[ite].icon}">`
                                     //else {
-
+                                    let meta = {}
                                     for (let l of dd[ite].content.split("\n")) {
                                         if (l.split(" ")[0] == "meta") {
-                                            let tem = l.split(" ")
-                                            tem.splice(0, 1);
-                                            tem = tem.join(" ")
+                                            //console.log(l)
+                                            meta = meta_parse(l)
+                                            //console.log(tt)
+                                            //let tem = l.split(" ")
+                                            //tem.splice(0, 1);
+                                            //tem = tem.join(" ")
                                             //console.log(tem)
-                                            tem = tem.split(",")
+                                            //tem = tem.split(",")
                                             //console.log(tem)
+                                            /*
                                             for (let tw of tem) {
                                                 if (tw.trim().split(" ")[0] == "icon") {
                                                     icon = `<img class="bar-menu-image" src="${tw.trim().split(" ")[1]}">`
                                                 }
                                             }
+                                            */
                                             /*if (l.split(" ")[1] == "icon") {
                                                 icon = `<img class="bar-menu-image" src="${l.split(" ")[2]}">`
                                             }*/
 
                                         }
                                     }
+                                    if(meta.icon!=null){
+                                        icon = `<img class="bar-menu-image" src="${meta.icon}">`
+                                    }
                                     ins += icon
                                     //}
-                                    ins += `<div class="bar-menu-text">${dd[ite].name}</div></div>`
+                                    ins += `<div class="bar-menu-text">${meta.name??dd[ite].name}</div></div>`
 
 
                                     //console.log(id.children.item(ite))
